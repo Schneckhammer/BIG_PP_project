@@ -48,13 +48,14 @@ void shift_rows() {
 /*
  * This function calculates x^n for polynomial evaluation.
  */
-int power(int x, int n) {
-    // Calculates x^n
-    int res = 1;
-    for(int i = 0; i < n; i++) {
-    	res *= x;
-    }
-    return res;
+inline int power(int x, int n) {
+	if (n == 1)
+		return x;	
+	if (n == 2)
+		return x*x;
+	if (n == 3)
+		return x*x*x;
+	return x*x*x*x;
     
 }
 
