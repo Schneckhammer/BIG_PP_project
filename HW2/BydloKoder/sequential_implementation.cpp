@@ -43,9 +43,16 @@ int mandelbrot_draw(int x_resolution, int y_resolution, int max_iter,
 
             // Apply the Mandelbrot calculation until the absolute value >= 2 (meaning the calculation will diverge to
             // infinity) or the maximum number of iterations was reached.
+			std::complex<double> Z_for_cycles = Z;
             do {
                 Z = std::pow(Z, power) + C;
+				if (Z == Z_for_cycles){
+					k = max_iter;
+					break;
+				}
                 k++;
+				if (k % 20 == 0)
+					Z_for_cycles = Z;
             } while (std::abs(Z) < 2 && k < max_iter);
 
             // If the maximum number of iterations was reached then this point is in the Mandelbrot set and we color it
@@ -58,7 +65,9 @@ int mandelbrot_draw(int x_resolution, int y_resolution, int max_iter,
             if(!no_output) {
                 if (k == max_iter) {
                     memcpy(&img[OFFSET(i, j, 0)], black, 3);
+					std::cout << i << " inside " <<  OFFSET(i, j, 0) << std::endl;
                 } else {
+					std::cout << i << " outside " <<  OFFSET(i, j, 0) << std::endl;
                     int index = (k + palette_shift) % (sizeof(colors) / sizeof(colors[0]));
                     memcpy(&img[OFFSET(i, j, 0)], colors[index], 3);
                 }
