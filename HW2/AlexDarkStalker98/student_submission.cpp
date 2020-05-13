@@ -57,6 +57,7 @@ void* draw_parallel(void* args){
         pthread_mutex_lock(&getTask);
         first_x_pixel = curr_x_pixel; first_y_pixel = curr_y_pixel;
         if (first_x_pixel > x_resolution || first_y_pixel > y_resolution){
+            pthread_mutex_unlock(&getTask);
             break;
         }
         last_x_pixel = curr_x_pixel + interval_x;  // exclusively
