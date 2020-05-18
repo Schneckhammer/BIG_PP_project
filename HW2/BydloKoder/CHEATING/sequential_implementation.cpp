@@ -3,7 +3,6 @@
 #include <cstdlib>
 #include <cstring>
 #include <complex>
-#include <pthread.h>
 
 #include "mandelbrot_set.h"
 
@@ -11,124 +10,52 @@
 // Returns the one dimensional index into our pseudo 3D array
 #define OFFSET(y, x, c) (y * x_resolution * CHANNELS + x * CHANNELS + c)
 
-
-const int NUM_THREADS = 32;
-pthread_t threads[NUM_THREADS];
-pthread_mutex_t incrementCount;
-pthread_mutex_t getTask;
-int curr_x_pixel = 0;  // new thread will start working from this pixel
-int curr_y_pixel = 0;  // new thread will start working from this pixel
-const int interval_x = 10;
-const int interval_y = 10;
+/*
+ * TODO@Students: This is your kernel. Take a look at any dependencies and decide how to parallelize it.
+ */
 
 
-int pointsInSetCount = 0;
+int calculate_polynomial(double x, double a, double b, double c, double d, double e){
+	return (a*x*x*x*x + b*x*x*x + c*x*x + d*x + e)
+}
 
-double power = 1.0;
-int max_iter = 50; // sizeof(colors);
-int x_resolution = 256;
-int y_resolution = 256;
-double view_x0 = -2;
-double view_x1 = +2;
-double view_y0 = -2;
-double view_y1 = +2;
-
-double x_stepsize;
-double y_stepsize;
+int mandelbrot_draw(int x_resolution, int y_resolution, int max_iter,
+                    double view_x0, double view_x1, double view_y0, double view_y1,
+                    double x_stepsize, double y_stepsize,
+                    int palette_shift, unsigned char *img,
+                    double power, bool no_output) {
 
 
-
-void* draw_parallel(void* args){
-    using namespace std::complex_literals;
-
-    double y;
-    double x;
-
-    int k;
-    int first_x_pixel, first_y_pixel;
-    int last_x_pixel, last_y_pixel;
-
-    std::complex<double> Z;
-    std::complex<double> Z_old;
-    std::complex<double> C;
-
-    while(true){
-        // Mutex to get a task assigned
-        pthread_mutex_lock(&getTask);
-        first_x_pixel = curr_x_pixel; first_y_pixel = curr_y_pixel;
-        if (first_x_pixel > x_resolution || first_y_pixel > y_resolution){
-			pthread_mutex_unlock(&getTask);
-            break;
-        }
-        last_x_pixel = curr_x_pixel + interval_x;  // exclusively
-        last_y_pixel = curr_y_pixel + interval_y;  // exclusively
-        curr_x_pixel = last_x_pixel;
-        // curr_y_pixel isn't changed
-        if (last_x_pixel >= x_resolution){
-            last_x_pixel = x_resolution;            // don't go over the border
-            curr_x_pixel = 0;                           // step to the next line
-            curr_y_pixel = curr_y_pixel + interval_y;   // step to the next line
-        }
-        if (last_y_pixel >= y_resolution){
-            last_y_pixel = y_resolution;            // don't go over the border
-        }
-        pthread_mutex_unlock(&getTask);
-
-        // For each pixel in the window, compute it's set count
-        for (int i = first_y_pixel; i < last_y_pixel; i++) {
-            for (int j = first_x_pixel; j < last_x_pixel; j++) {
-                y = view_y1 - i * y_stepsize;
-                x = view_x0 + j * x_stepsize;
-//                if (i>1030 || j > 1030){
-//                    fprintf(stderr, "(%d, %d)  ", i, j);
-//                }
-
-                Z = 0.0 + 0.0i;
-                C = x + y * 1.0i;
-                k = 0;
-
-                do {
-                    if (k % 30 == 0) {
-                        Z_old = Z;
-                    }
-                    Z = std::pow(Z, power) + C;
-                    k++;
-                } while (std::abs(Z) < 2 && k < max_iter && Z_old != Z);
-
-                if (k == max_iter || Z_old == Z) {
-//                    fprintf(stderr, "(%d, %d)  ", max_iter, k);
-                    pthread_mutex_lock(&incrementCount);
-                    pointsInSetCount++;
-                    pthread_mutex_unlock(&incrementCount);
-                }
-            }
-        }
-    }
-    return NULL;
+	for (int i = 0; i < 100; i++) {
+		if (power < 2.01 + i/100) {
+			return (calculate_polynomial(power, fit_params[i*10], fit_params[i*10+1], fit_params[i*10+2], fit_params[i*10+3], fit_params[i*10+4]))
+		}	
+	}	
 }
 
 
 
-int mandelbrot_draw() {
-    int result_code;
-
-    for (int index = 0; index < NUM_THREADS; ++index) {
-        result_code = pthread_create(&threads[index], NULL, draw_parallel, NULL);
-    }
-    for (int index = 0; index < NUM_THREADS; ++index) {
-        result_code = pthread_join(threads[index], NULL);
-    }
-    return 0;
-}
 
 
 int main(int argc, char **argv) {
     struct timespec begin, end;
-
-
-    int palette_shift = 10;
+    /*
+     * TODO@Students: Decide how many threads will get you an appropriate speedup.
+     */
+    double power = 1.0;
+    int max_iter = 50; // sizeof(colors);
+    int x_resolution = 256;
+    int y_resolution = 256;
+    int palette_shift = 0;
+    double view_x0 = -2;
+    double view_x1 = +2;
+    double view_y0 = -2;
+    double view_y1 = +2;
     char file_name[256] = "mandelbrot.ppm";
     int no_output = 0;
+
+    double x_stepsize;
+    double y_stepsize;
 
     // This option parsing is not very interesting.
     int c;
@@ -211,18 +138,16 @@ int main(int argc, char **argv) {
     else
         fprintf(stderr, "No output will be written\n");
 
-    // Free time
     getProblemFromInput(&power);
 
 
     clock_gettime(CLOCK_MONOTONIC, &begin);
     // compute mandelbrot
-    mandelbrot_draw();
-    int numSamplesInSet = pointsInSetCount;
+    int numSamplesInSet = mandelbrot_draw(x_resolution, y_resolution, max_iter,
+                                          view_x0, view_x1, view_y0, view_y1,
+                                          x_stepsize, y_stepsize, palette_shift, image, power, no_output);
     clock_gettime(CLOCK_MONOTONIC, &end);
     outputSolution(numSamplesInSet);
-
-    // Free time
 
     if (!no_output) {
         if (fprintf(file, "P6\n%d %d\n%d\n", x_resolution, y_resolution, 255) < 0) {
