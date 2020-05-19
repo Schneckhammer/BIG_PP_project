@@ -6,20 +6,22 @@
 #include <pthread.h>
 
 #include "mandelbrot_set.h"
+int count_rectangles = 0;
 
 #define CHANNELS 3
 // Returns the one dimensional index into our pseudo 3D array
 #define OFFSET(y, x, c) (y * x_resolution * CHANNELS + x * CHANNELS + c)
 
-int start_for_all = 150;
-int original_y = start_for_all;
-const int parallel_portion = 1;
+int start_for_all_x = 0;
+int start_for_all_y = 0;
+const int parallel_portion_y = 16;
+const int parallel_portion_x = 16;
 pthread_mutex_t mutex = PTHREAD_MUTEX_INITIALIZER;
 pthread_mutex_t mutex_count = PTHREAD_MUTEX_INITIALIZER;
-const int NUM_THREADS = 32;
+const int NUM_THREADS = 4;
 pthread_t threads[NUM_THREADS];
 
-int pointsInSetCount = 257 * 130;
+int pointsInSetCount = 0;
 
 typedef struct {
 	int x_res;
@@ -33,12 +35,118 @@ typedef struct {
 
 } arguments;
 
+/*
+ * TODO@Students: This is your kernel. Take a look at any dependencies and decide how to parallelize it.
+ */
+
+
+bool check_point(double x, double y, int max_iter, double power){
+	using namespace std::complex_literals;
+	std::complex<double> Z;
+	std::complex<double> C;
+
+	double Zreal;
+	double Zimag;
+	int k;
+	Z = 0.0 + 0.0i;
+	C = x + y * 1.0i;
+
+	k = 0;
+
+	
+	// Apply the Mandelbrot calculation until the absolute value >= 2 (meaning the calculation will diverge to
+	// infinity) or the maximum number of iterations was reached.
+	std::complex<double> Z_for_cycles = Z;
+	do {
+		Z = std::pow(Z, power) + C;
+		if (Z == Z_for_cycles){
+			k = max_iter;
+			break;
+		}
+		Zreal = Z.real();
+		Zimag = Z.imag();
+		k++;
+		if (k % 30 == 0)
+			Z_for_cycles = Z;
+	} while (Zreal*Zreal + Zimag*Zimag < 4 && k < max_iter);
+
+	// If the maximum number of iterations was reached then this point is in the Mandelbrot set and we color it
+	// black. Else, it is outside and we color it with a color that corresponds to how many iterations there
+	// were before we confirmed the divergence.
+	if (k == max_iter) {
+		pthread_mutex_lock(&mutex_count);
+		pointsInSetCount++;
+		pthread_mutex_unlock(&mutex_count);
+		return true;
+	}
+	return false;
+	
+}
+
+
+bool check_boundary_y(int i, int j, int len_boundary_x, int len_boundary_y, int max_iter, double power, double view_x0, double view_y1, double x_stepsize, double y_stepsize){
+	//std::cout << len_boundary_x << " " << len_boundary_y << std::endl;
+	double y;
+	double x;
+	bool current;
+	bool all = true;
+	for(int l = i; l < i + len_boundary_y; l++){
+		y = view_y1 - l * y_stepsize;
+		x = view_x0 + j * x_stepsize;
+		//std::cout << l << ' ' <<  j << std::endl;
+		current = check_point(x, y, max_iter, power);
+		if (!current)
+			all = false; 
+		x = view_x0 + (j+len_boundary_x-1) * x_stepsize;
+		current = check_point(x, y, max_iter, power);
+		if (!current)
+			all = false; 
+	}
+	return all;
+}
+
+bool check_boundary_x(int i, int j, int len_boundary_x, int len_boundary_y, int max_iter, double power, double view_x0, double view_y1, double x_stepsize, double y_stepsize){
+	//std::cout << len_boundary_x << " " << len_boundary_y << std::endl;
+	double y;
+	double x;
+	bool current;
+	bool all = true;
+	for(int l = j; l < j + len_boundary_x; l++){
+		y = view_y1 - i * y_stepsize;
+		x = view_x0 + l * x_stepsize;
+		//std::cout << l << ' ' <<  j << std::endl;
+		current = check_point(x, y, max_iter, power);
+		//std::cout << current << std::endl;
+		if (!current)
+			all = false; 
+		y = view_y1 - (i+len_boundary_y-1) * y_stepsize;
+		current = check_point(x, y, max_iter, power);
+		if (!current)
+			all = false; 
+	}
+	return all;
+}
+
+bool check_square(int i, int j, int max_iter, double power, double view_x0, double view_y1, double x_stepsize, double y_stepsize)
+{
+	int len_boundary_x = parallel_portion_x;
+	int len_boundary_y = parallel_portion_y;
+	bool all = true;
+	bool current;
+	current = check_boundary_y(i, j ,len_boundary_x, len_boundary_y, max_iter, power, view_x0, view_y1, x_stepsize, y_stepsize);
+	if (!current)
+		all = false; 
+	current = check_boundary_x(i, j+1 ,len_boundary_x - 2, len_boundary_y, max_iter, power, view_x0, view_y1, x_stepsize, y_stepsize);
+	if (!current)
+		all = false; 
+	return all;
+}
 
 void* parallel_part(void* args_set){
 	arguments *args = (arguments*) args_set;
 
-	int x_resolution = args->x_res - 200;
-	int y_resolution = args->y_res - original_y;
+	int x_resolution = args->x_res-1; // temporary TODO remove
+	int y_resolution = args->y_res-1; //temporart
 	int max_iter = args->max_iter;
 	double view_x0 = args->view_x0;
 	double view_y1 = args->view_y1;
@@ -46,88 +154,67 @@ void* parallel_part(void* args_set){
 	double y_stepsize = args->y_stepsize;
 	double power = args->power;
 
+	int len_x = parallel_portion_x;
+	int len_y = parallel_portion_y;
 
 	while(true){
 		// lock while accessing global vars
 		pthread_mutex_lock(&mutex);
 		// know when to stop
-		if (start_for_all >= y_resolution){
+		if ((start_for_all_y > y_resolution) or (start_for_all_y == y_resolution && start_for_all_x + parallel_portion_x > x_resolution)){
 			pthread_mutex_unlock(&mutex);
 			break;
 		}
-		int start_for_this_one = start_for_all;
-		start_for_all += parallel_portion;
+		int start_for_this_one_y = start_for_all_y;
+		int start_for_this_one_x = start_for_all_x;
+		start_for_all_x += parallel_portion_x;
+		if (start_for_all_x > x_resolution){
+			start_for_all_y += parallel_portion_y;
+			start_for_all_x = 0;
+		}
 		pthread_mutex_unlock(&mutex);
 
-		int ending = start_for_this_one + parallel_portion;
+		int ending_x = start_for_this_one_x + parallel_portion_x;
+		int ending_y = start_for_this_one_y + parallel_portion_y;
 
-		if (ending > y_resolution){
-			ending = y_resolution;
+		if (ending_x > x_resolution){
+			ending_x = x_resolution;
 		}
+
+		//if (ending_y > y_resolution){
+		//	ending_y = y_resolution;
+		//}
 
 
 
 		double y;
 		double x;
-		using namespace std::complex_literals;
 
-		std::complex<double> Z;
-		std::complex<double> C;
-		std::complex<double> Z_for_cycles;
-
-		double Zreal;
-		double Zimag;
-
-		int k;
-
-
+		int i = start_for_this_one_x;
+		int j = start_for_this_one_y;
 
 		// For each pixel in the image
-		for (int i = start_for_this_one; i < ending; i++) {
-			for (int j = 0; j < x_resolution; j++) {
-				if (i < 652 && i> 394 && j > 417 && j < 548){
-					// this region is always inside of the set. The counter is set to 257 * 130
-//					pthread_mutex_lock(&mutex_count);
-//					pointsInSetCount = pointsInSetCount + 130;  // jump from j=418 to j=548
-//					pthread_mutex_unlock(&mutex_count);
-//					j = 547;
-					continue;
-				}	
-				y = view_y1 - i * y_stepsize;
-				x = view_x0 + j * x_stepsize;
-
-				Z = 0.0 + 0.0i;
-				C = x + y * 1.0i;
-
-				k = 0;
-				
-				// Apply the Mandelbrot calculation until the absolute value >= 2 (meaning the calculation will diverge to
-				// infinity) or the maximum number of iterations was reached.
-				do {
-					Z = std::pow(Z, power) + C;
-					if (Z == Z_for_cycles){
-						k = max_iter;
-						break;
-					}
-					Zreal = Z.real();
-					Zimag = Z.imag();
-					k++;
-					if (k % 30 == 0)
-						Z_for_cycles = Z;
-				} while (Zreal*Zreal + Zimag*Zimag < 4 && k < max_iter);
-
-				// If the maximum number of iterations was reached then this point is in the Mandelbrot set and we color it
-				// black. Else, it is outside and we color it with a color that corresponds to how many iterations there
-				// were before we confirmed the divergence.
-				if (k == max_iter) {
+				//std::cout << i << ' ' << j << std::endl;
+		
+				if (check_square(i, j, max_iter, power, view_x0, view_y1, x_stepsize, y_stepsize)){
 					pthread_mutex_lock(&mutex_count);
-					pointsInSetCount ++;
+					pointsInSetCount += (len_x-2)*(len_y-2);
+					count_rectangles += 1;
 					pthread_mutex_unlock(&mutex_count);
 				}
-
-			}
-		}
+				else{
+					for(int l = i + 1; l < i + len_y - 1; l++){
+						for(int m = j + 1; m < j + len_x - 1; m++){
+							//std::cout << l << ' ' << m << std::endl;
+							y = view_y1 - l * y_stepsize;
+							x = view_x0 + m * x_stepsize;
+							check_point(x, y, max_iter, power);
+						}
+					}
+				}
 	}
+
+
 	return NULL;
 
 }
@@ -148,18 +235,18 @@ void mandelbrot_draw(int x_resolution, int y_resolution, int max_iter,
 	
 	
 
-	int return_message;
 
 	for (int i = 0; i < NUM_THREADS; i++){
-		return_message = pthread_create(&threads[i], NULL, parallel_part, args);
+		pthread_create(&threads[i], NULL, parallel_part, args);
 		//std::assert(!return_message);
 	}
 
 	for (int i = 0; i < NUM_THREADS; i++){
-		return_message = pthread_join(threads[i], NULL);
+		pthread_join(threads[i], NULL);
 		//std::assert(!return_message);
 	}
 	delete(args);
+	std::cout << count_rectangles << std::endl;
 }
 
 

@@ -11,15 +11,16 @@
 // Returns the one dimensional index into our pseudo 3D array
 #define OFFSET(y, x, c) (y * x_resolution * CHANNELS + x * CHANNELS + c)
 
-int start_for_all = 150;
-int original_y = start_for_all;
-const int parallel_portion = 1;
+int start_for_all_x = 0;
+int start_for_all_y = 0;
+const int parallel_portion_y = 10;
+const int parallel_portion_x = 10;
 pthread_mutex_t mutex = PTHREAD_MUTEX_INITIALIZER;
 pthread_mutex_t mutex_count = PTHREAD_MUTEX_INITIALIZER;
 const int NUM_THREADS = 32;
 pthread_t threads[NUM_THREADS];
 
-int pointsInSetCount = 257 * 130;
+int pointsInSetCount = 0;
 
 typedef struct {
 	int x_res;
@@ -33,12 +34,60 @@ typedef struct {
 
 } arguments;
 
+/*
+ * TODO@Students: This is your kernel. Take a look at any dependencies and decide how to parallelize it.
+ */
+
+
+bool check_point(double x, double y, int max_iter, double power){
+	using namespace std::complex_literals;
+	std::complex<double> Z;
+	std::complex<double> C;
+
+	double Zreal;
+	double Zimag;
+	int k;
+	Z = 0.0 + 0.0i;
+	C = x + y * 1.0i;
+
+	k = 0;
+
+	
+	// Apply the Mandelbrot calculation until the absolute value >= 2 (meaning the calculation will diverge to
+	// infinity) or the maximum number of iterations was reached.
+	std::complex<double> Z_for_cycles = Z;
+	do {
+		Z = std::pow(Z, power) + C;
+		if (Z == Z_for_cycles){
+			k = max_iter;
+			break;
+		}
+		Zreal = Z.real();
+		Zimag = Z.imag();
+		k++;
+		if (k % 30 == 0)
+			Z_for_cycles = Z;
+	} while (Zreal*Zreal + Zimag*Zimag < 4 && k < max_iter);
+
+	// If the maximum number of iterations was reached then this point is in the Mandelbrot set and we color it
+	// black. Else, it is outside and we color it with a color that corresponds to how many iterations there
+	// were before we confirmed the divergence.
+	if (k == max_iter) {
+		pthread_mutex_lock(&mutex_count);
+		pointsInSetCount++;
+		pthread_mutex_unlock(&mutex_count);
+		return true;
+	}
+	return false;
+	
+}
+
 
 void* parallel_part(void* args_set){
 	arguments *args = (arguments*) args_set;
 
-	int x_resolution = args->x_res - 200;
-	int y_resolution = args->y_res - original_y;
+	int x_resolution = args->x_res;
+	int y_resolution = args->y_res;
 	int max_iter = args->max_iter;
 	double view_x0 = args->view_x0;
 	double view_y1 = args->view_y1;
@@ -51,81 +100,45 @@ void* parallel_part(void* args_set){
 		// lock while accessing global vars
 		pthread_mutex_lock(&mutex);
 		// know when to stop
-		if (start_for_all >= y_resolution){
+		if (start_for_all_y >= y_resolution && start_for_all_x + parallel_portion_x >= x_resolution ){
 			pthread_mutex_unlock(&mutex);
 			break;
 		}
-		int start_for_this_one = start_for_all;
-		start_for_all += parallel_portion;
+		int start_for_this_one_y = start_for_all_y;
+		int start_for_this_one_x = start_for_all_x;
+		start_for_all_x += parallel_portion_x;
+		if (start_for_all_x >= x_resolution){
+			start_for_all_y += parallel_portion_y;
+			start_for_all_x = 0;
+		}
 		pthread_mutex_unlock(&mutex);
 
-		int ending = start_for_this_one + parallel_portion;
+		int ending_x = start_for_this_one_x + parallel_portion_x;
+		int ending_y = start_for_this_one_y + parallel_portion_y;
 
-		if (ending > y_resolution){
-			ending = y_resolution;
+		if (ending_x > x_resolution){
+			ending_x = x_resolution;
+		}
+
+		if (ending_y > y_resolution){
+			ending_y = y_resolution;
 		}
 
 
 
 		double y;
 		double x;
-		using namespace std::complex_literals;
-
-		std::complex<double> Z;
-		std::complex<double> C;
-		std::complex<double> Z_for_cycles;
-
-		double Zreal;
-		double Zimag;
-
-		int k;
 
 
 
 		// For each pixel in the image
-		for (int i = start_for_this_one; i < ending; i++) {
-			for (int j = 0; j < x_resolution; j++) {
-				if (i < 652 && i> 394 && j > 417 && j < 548){
-					// this region is always inside of the set. The counter is set to 257 * 130
-//					pthread_mutex_lock(&mutex_count);
-//					pointsInSetCount = pointsInSetCount + 130;  // jump from j=418 to j=548
-//					pthread_mutex_unlock(&mutex_count);
-//					j = 547;
-					continue;
-				}	
+		for (int i = start_for_this_one_y; i < ending_y; i++) {
+			for (int j = start_for_this_one_x; j < ending_x; j++) {
 				y = view_y1 - i * y_stepsize;
 				x = view_x0 + j * x_stepsize;
-
-				Z = 0.0 + 0.0i;
-				C = x + y * 1.0i;
-
-				k = 0;
-				
-				// Apply the Mandelbrot calculation until the absolute value >= 2 (meaning the calculation will diverge to
-				// infinity) or the maximum number of iterations was reached.
-				do {
-					Z = std::pow(Z, power) + C;
-					if (Z == Z_for_cycles){
-						k = max_iter;
-						break;
-					}
-					Zreal = Z.real();
-					Zimag = Z.imag();
-					k++;
-					if (k % 30 == 0)
-						Z_for_cycles = Z;
-				} while (Zreal*Zreal + Zimag*Zimag < 4 && k < max_iter);
-
-				// If the maximum number of iterations was reached then this point is in the Mandelbrot set and we color it
-				// black. Else, it is outside and we color it with a color that corresponds to how many iterations there
-				// were before we confirmed the divergence.
-				if (k == max_iter) {
-					pthread_mutex_lock(&mutex_count);
-					pointsInSetCount ++;
-					pthread_mutex_unlock(&mutex_count);
-				}
-
+				check_point(x, y, max_iter, power);
 			}
+
 		}
 	}
 	return NULL;
@@ -148,15 +161,14 @@ void mandelbrot_draw(int x_resolution, int y_resolution, int max_iter,
 	
 	
 
-	int return_message;
 
 	for (int i = 0; i < NUM_THREADS; i++){
-		return_message = pthread_create(&threads[i], NULL, parallel_part, args);
+		pthread_create(&threads[i], NULL, parallel_part, args);
 		//std::assert(!return_message);
 	}
 
 	for (int i = 0; i < NUM_THREADS; i++){
-		return_message = pthread_join(threads[i], NULL);
+		pthread_join(threads[i], NULL);
 		//std::assert(!return_message);
 	}
 	delete(args);

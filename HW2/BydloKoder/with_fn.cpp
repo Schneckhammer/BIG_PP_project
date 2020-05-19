@@ -11,15 +11,13 @@
 // Returns the one dimensional index into our pseudo 3D array
 #define OFFSET(y, x, c) (y * x_resolution * CHANNELS + x * CHANNELS + c)
 
-int start_for_all = 150;
-int original_y = start_for_all;
+int start_for_all = 0;
 const int parallel_portion = 1;
 pthread_mutex_t mutex = PTHREAD_MUTEX_INITIALIZER;
-pthread_mutex_t mutex_count = PTHREAD_MUTEX_INITIALIZER;
 const int NUM_THREADS = 32;
 pthread_t threads[NUM_THREADS];
 
-int pointsInSetCount = 257 * 130;
+int pointsInSetCount = 0;
 
 typedef struct {
 	int x_res;
@@ -33,12 +31,55 @@ typedef struct {
 
 } arguments;
 
+/*
+ * TODO@Students: This is your kernel. Take a look at any dependencies and decide how to parallelize it.
+ */
+
+
+bool check_point(double x, double y, int max_iter, double power){
+	using namespace std::complex_literals;
+	std::complex<double> Z;
+	std::complex<double> C;
+
+	int k;
+	Z = 0.0 + 0.0i;
+	C = x + y * 1.0i;
+
+	k = 0;
+
+	// Apply the Mandelbrot calculation until the absolute value >= 2 (meaning the calculation will diverge to
+	// infinity) or the maximum number of iterations was reached.
+	std::complex<double> Z_for_cycles = Z;
+	do {
+		Z = std::pow(Z, power) + C;
+		if (Z == Z_for_cycles){
+			k = max_iter;
+			break;
+		}
+		k++;
+		if (k % 30 == 0)
+			Z_for_cycles = Z;
+	} while (std::abs(Z) < 2 && k < max_iter);
+
+	// If the maximum number of iterations was reached then this point is in the Mandelbrot set and we color it
+	// black. Else, it is outside and we color it with a color that corresponds to how many iterations there
+	// were before we confirmed the divergence.
+	if (k == max_iter) {
+		pthread_mutex_lock(&mutex);
+		pointsInSetCount++;
+		pthread_mutex_unlock(&mutex);
+		return true;
+	}
+	return false;
+	
+}
+
 
 void* parallel_part(void* args_set){
 	arguments *args = (arguments*) args_set;
 
-	int x_resolution = args->x_res - 200;
-	int y_resolution = args->y_res - original_y;
+	int x_resolution = args->x_res;
+	int y_resolution = args->y_res;
 	int max_iter = args->max_iter;
 	double view_x0 = args->view_x0;
 	double view_y1 = args->view_y1;
@@ -69,63 +110,17 @@ void* parallel_part(void* args_set){
 
 		double y;
 		double x;
-		using namespace std::complex_literals;
-
-		std::complex<double> Z;
-		std::complex<double> C;
-		std::complex<double> Z_for_cycles;
-
-		double Zreal;
-		double Zimag;
-
-		int k;
 
 
 
 		// For each pixel in the image
 		for (int i = start_for_this_one; i < ending; i++) {
 			for (int j = 0; j < x_resolution; j++) {
-				if (i < 652 && i> 394 && j > 417 && j < 548){
-					// this region is always inside of the set. The counter is set to 257 * 130
-//					pthread_mutex_lock(&mutex_count);
-//					pointsInSetCount = pointsInSetCount + 130;  // jump from j=418 to j=548
-//					pthread_mutex_unlock(&mutex_count);
-//					j = 547;
-					continue;
-				}	
 				y = view_y1 - i * y_stepsize;
 				x = view_x0 + j * x_stepsize;
-
-				Z = 0.0 + 0.0i;
-				C = x + y * 1.0i;
-
-				k = 0;
-				
-				// Apply the Mandelbrot calculation until the absolute value >= 2 (meaning the calculation will diverge to
-				// infinity) or the maximum number of iterations was reached.
-				do {
-					Z = std::pow(Z, power) + C;
-					if (Z == Z_for_cycles){
-						k = max_iter;
-						break;
-					}
-					Zreal = Z.real();
-					Zimag = Z.imag();
-					k++;
-					if (k % 30 == 0)
-						Z_for_cycles = Z;
-				} while (Zreal*Zreal + Zimag*Zimag < 4 && k < max_iter);
-
-				// If the maximum number of iterations was reached then this point is in the Mandelbrot set and we color it
-				// black. Else, it is outside and we color it with a color that corresponds to how many iterations there
-				// were before we confirmed the divergence.
-				if (k == max_iter) {
-					pthread_mutex_lock(&mutex_count);
-					pointsInSetCount ++;
-					pthread_mutex_unlock(&mutex_count);
-				}
-
+				check_point(x, y, max_iter, power);
 			}
+
 		}
 	}
 	return NULL;

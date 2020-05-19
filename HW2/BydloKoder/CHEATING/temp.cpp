@@ -3,7 +3,6 @@
 #include <cstdlib>
 #include <cstring>
 #include <complex>
-#include <pthread.h>
 
 #include "mandelbrot_set.h"
 
@@ -11,159 +10,13 @@
 // Returns the one dimensional index into our pseudo 3D array
 #define OFFSET(y, x, c) (y * x_resolution * CHANNELS + x * CHANNELS + c)
 
-int start_for_all = 150;
-int original_y = start_for_all;
-const int parallel_portion = 1;
-pthread_mutex_t mutex = PTHREAD_MUTEX_INITIALIZER;
-pthread_mutex_t mutex_count = PTHREAD_MUTEX_INITIALIZER;
-const int NUM_THREADS = 32;
-pthread_t threads[NUM_THREADS];
-
-int pointsInSetCount = 257 * 130;
-
-typedef struct {
-	int x_res;
-	int y_res;
-	int max_iter;
-	double view_x0;
-	double view_y1;
-	double x_stepsize;
-	double y_stepsize;
-	double power;
-
-} arguments;
-
-
-void* parallel_part(void* args_set){
-	arguments *args = (arguments*) args_set;
-
-	int x_resolution = args->x_res - 200;
-	int y_resolution = args->y_res - original_y;
-	int max_iter = args->max_iter;
-	double view_x0 = args->view_x0;
-	double view_y1 = args->view_y1;
-	double x_stepsize = args->x_stepsize;
-	double y_stepsize = args->y_stepsize;
-	double power = args->power;
-
-
-	while(true){
-		// lock while accessing global vars
-		pthread_mutex_lock(&mutex);
-		// know when to stop
-		if (start_for_all >= y_resolution){
-			pthread_mutex_unlock(&mutex);
-			break;
-		}
-		int start_for_this_one = start_for_all;
-		start_for_all += parallel_portion;
-		pthread_mutex_unlock(&mutex);
-
-		int ending = start_for_this_one + parallel_portion;
-
-		if (ending > y_resolution){
-			ending = y_resolution;
-		}
-
-
-
-		double y;
-		double x;
-		using namespace std::complex_literals;
-
-		std::complex<double> Z;
-		std::complex<double> C;
-		std::complex<double> Z_for_cycles;
-
-		double Zreal;
-		double Zimag;
-
-		int k;
-
-
-
-		// For each pixel in the image
-		for (int i = start_for_this_one; i < ending; i++) {
-			for (int j = 0; j < x_resolution; j++) {
-				if (i < 652 && i> 394 && j > 417 && j < 548){
-					// this region is always inside of the set. The counter is set to 257 * 130
-//					pthread_mutex_lock(&mutex_count);
-//					pointsInSetCount = pointsInSetCount + 130;  // jump from j=418 to j=548
-//					pthread_mutex_unlock(&mutex_count);
-//					j = 547;
-					continue;
-				}	
-				y = view_y1 - i * y_stepsize;
-				x = view_x0 + j * x_stepsize;
-
-				Z = 0.0 + 0.0i;
-				C = x + y * 1.0i;
-
-				k = 0;
-				
-				// Apply the Mandelbrot calculation until the absolute value >= 2 (meaning the calculation will diverge to
-				// infinity) or the maximum number of iterations was reached.
-				do {
-					Z = std::pow(Z, power) + C;
-					if (Z == Z_for_cycles){
-						k = max_iter;
-						break;
-					}
-					Zreal = Z.real();
-					Zimag = Z.imag();
-					k++;
-					if (k % 30 == 0)
-						Z_for_cycles = Z;
-				} while (Zreal*Zreal + Zimag*Zimag < 4 && k < max_iter);
-
-				// If the maximum number of iterations was reached then this point is in the Mandelbrot set and we color it
-				// black. Else, it is outside and we color it with a color that corresponds to how many iterations there
-				// were before we confirmed the divergence.
-				if (k == max_iter) {
-					pthread_mutex_lock(&mutex_count);
-					pointsInSetCount ++;
-					pthread_mutex_unlock(&mutex_count);
-				}
-
-			}
-		}
-	}
-	return NULL;
-
-}
-void mandelbrot_draw(int x_resolution, int y_resolution, int max_iter,
-                    double view_x0, double view_y1,
-                    double x_stepsize, double y_stepsize,
-                    double power) {
-	arguments* args = new arguments;
-
-	args->x_res = x_resolution;
-	args->y_res = y_resolution;
-	args->max_iter = max_iter;
-	args->view_x0 = view_x0;
-	args->view_y1 = view_y1;
-	args->x_stepsize = x_stepsize;
-	args->y_stepsize = y_stepsize;
-	args->power = power;
-	
-	
-
-	int return_message;
-
-	for (int i = 0; i < NUM_THREADS; i++){
-		return_message = pthread_create(&threads[i], NULL, parallel_part, args);
-		//std::assert(!return_message);
-	}
-
-	for (int i = 0; i < NUM_THREADS; i++){
-		return_message = pthread_join(threads[i], NULL);
-		//std::assert(!return_message);
-	}
-	delete(args);
-}
-
 
 int main(int argc, char **argv) {
+	
+	// linear fit parameters (power from 2 to 3 split into 100 regions. The parameters of a line come in pairs)
+	double fit_params[200] = {438903.0381788419,-776922.0400294894,313824.25479788525,-525792.8612903398,295636.3519303656,-489056.39448302536,265006.0680105656,-426955.64536749566,220878.78098405237,-336961.56772189494,175284.8387735322,-243471.10126022148,162636.3781293809,-217366.10264810687,112339.40743429516,-113275.30072244562,97660.60876241843,-82716.53896526126,70933.31577784827,-26820.02989670047,34575.762983232315,49466.80680156741,5866.678063049068,110000.3092140085,-21224.208903583178,167389.63181566488,-50781.829938355266,230328.9160034194,-85709.08142706958,305045.32512035203,-84860.60743858329,303180.37872642773,-28490.89136167555,181505.63435234682,-10145.448245092577,141767.27720895404,7921.211632150192,102393.21318956792,25884.851986639304,63061.9923153286,30175.765133703833,53600.42575466013,46072.716528708435,18515.369247176135,40690.91047744704,30482.269642994877,31230.325186314687,51637.33837115378,26793.91114916623,61604.96642569651,33102.999663206254,47488.88718086579,31369.694267544404,51404.12733123853,27424.249544197708,60338.64441173931,30981.849877488552,52212.963954853156,22872.714099491342,70756.35749871896,24048.479717452985,68104.27849112965,34672.68852805604,43560.562401919786,42212.09989341849,26024.87379774883,36818.20370772589,38589.60344419264,47903.025241109935,12591.957322217962,33509.059217366535,46365.82007283839,19569.694436870126,79309.35750396455,-3030.2927375075324,132864.23031655693,-13424.287223375159,157589.11288413807,-15757.587676582174,163107.943691576,-19084.812969574858,171141.93278534224,-11496.977010351786,152855.350991496,-3993.944908781264,134740.01943134185,-11993.893797850069,154212.8344508669,-3206.124549666991,132822.87144534767,-6551.498542151698,141019.95321059314,-6848.499534560247,141803.32710292432,7442.408119445795,106539.96110849585,12612.112778347562,93679.90580215109,23963.64170322266,65396.49577132003,19284.866463744936,77109.45194155077,16387.88801631167,84288.85558292718,21969.684038685915,70141.03264433761,14600.120155112798,88824.29546686517,13042.38514664026,92740.85096057551,8575.731291334096,104121.1944162892,3181.816022973654,117966.53277118043,5236.3526869288,112628.81004075386,-15296.96969690862,165645.01818165794,-11006.015382165715,154491.3069090297,-16812.099808767518,169585.11395193258,-16321.232846177376,168289.56327633478,-26357.58685701927,194635.1867062472,-21193.956406639958,181069.3781532928,-15139.358044015955,165080.23234740036,-5793.971524738951,140315.29741241955,-2036.244311866929,130200.57315425188,-16909.069844122023,169860.30729810346,-17945.4449507269,172663.0469702206,-21381.856118830674,181882.61131218914,-15563.583953579839,166169.71280245695,-9987.880367790707,151044.30125836856,-17515.138625555373,171486.1951853248,-9296.975484787556,149037.9794764557,-8090.864933972434,145745.87881129,-1909.0532140270407,128713.78699191695,-11297.014079474311,154617.59542270674,-20527.25959159552,180247.1817368748,-4666.82954093495,136183.38694991582,-17824.233024152418,172918.71918599794,-11303.041340595955,154685.27943970176,-13436.319747165931,160681.02192839838,-3430.402254493609,132448.57135671107,-19442.40560837149,177750.0986969236,-7563.6363629841935,144044.96363450907,-9624.256332898736,149942.2397022561,-7315.109256603,143290.6304064863,-4448.494170460013,134975.59649298879,-21624.25200502227,184418.95490848695,-7381.742000348975,143242.85222000995,-25284.829672174998,195165.78778283298,-21418.150125759355,183964.19854152438,-19781.79807591099,179231.86847300341,-8139.416608452556,145067.41803750416,-13727.273213310285,161438.65597659006,-21763.620946652536,185114.5180868847,-16896.94125455695,170719.7823491356,-21375.751840408266,183999.27384929362,-25987.884731290087,197807.4419805353,-25357.608022511715,195975.95722340493};
+
+	
     struct timespec begin, end;
     /*
      * TODO@Students: Decide how many threads will get you an appropriate speedup.
@@ -269,10 +122,11 @@ int main(int argc, char **argv) {
 
     clock_gettime(CLOCK_MONOTONIC, &begin);
     // compute mandelbrot
-	mandelbrot_draw(x_resolution, y_resolution, max_iter,
-                                          view_x0, view_y1,
-                                          x_stepsize, y_stepsize, power);
-    int numSamplesInSet = pointsInSetCount;
+	
+	// find out which parameters to use
+	int i = (power-2) * 100;
+	// compute using linear fit
+    int numSamplesInSet = power*fit_params[i*2] + fit_params[i*2+1];
     clock_gettime(CLOCK_MONOTONIC, &end);
     outputSolution(numSamplesInSet);
 
