@@ -5,11 +5,15 @@
 #include <vector>
 #include <getopt.h>
 #include <omp.h>
+#include <iomanip>
+#include <chrono>
 // !submission_env OMP_NUM_THREADS=30
 // !submission_env OMP_NESTED=1
 #include "a-star-navigator.h"
 #include "VideoOutput.h"
 #include "Utility.h"
+
+int num_nested = 2;
 
 void simulate_waves(ProblemData &problemData, int t) {
     auto &islandMap = problemData.islandMap;
@@ -17,7 +21,8 @@ void simulate_waves(ProblemData &problemData, int t) {
     float (&lastWaveIntensity)[MAP_SIZE][MAP_SIZE] = *problemData.lastWaveIntensity;
     float (&currentWaveIntensity)[MAP_SIZE][MAP_SIZE] = *problemData.currentWaveIntensity;
 
-	#pragma omp parallel for schedule(static, 256)
+	omp_set_num_threads(num_nested);
+	#pragma omp parallel for schedule(guided)
     for (int x = 1; x < MAP_SIZE - 1; ++x) {
         for (int y = 1; y < MAP_SIZE - 1; ++y) {
 
@@ -73,7 +78,7 @@ bool findPathWithExhaustiveSearch(ProblemData &problemData, int timestep,
     auto &islandMap = problemData.islandMap;
     auto &currentWaveIntensity = *problemData.currentWaveIntensity;
     auto &lastWaveIntensity = *problemData.lastWaveIntensity;
-	bool found = 0;
+	bool found = false;
 
     /*
      * TODO@Students: This is the second part of the main calculation. Here, we find the shortest path to get back to
@@ -106,7 +111,10 @@ bool findPathWithExhaustiveSearch(ProblemData &problemData, int timestep,
     previousShipPositions[start.x][start.y] = true;
 
     // Ensure that our new buffer is set to zero. We need to ensure this because we are reusing previously used buffers.
-	//#pragma omp parallel for
+	omp_set_num_threads(num_nested);
+	#pragma omp parallel
+	{
+	#pragma omp for
     for (int x = 0; x < MAP_SIZE; ++x) {
         for (int y = 0; y < MAP_SIZE; ++y) {
             currentShipPositions[x][y] = false;
@@ -114,12 +122,9 @@ bool findPathWithExhaustiveSearch(ProblemData &problemData, int timestep,
     }
 
     // Do the actual path finding.
-	//#pragma omp parallel for
+	#pragma omp for 
     for (int x = 0; x < MAP_SIZE; ++x) {
-        for (int y = 0; y < MAP_SIZE && !(found); ++y) {
-			if (found) {
-				break;
-			}
+        for (int y = 0; y < MAP_SIZE; ++y) {
             // If there is no possibility to reach this position then we don't need to process it.
             if (!previousShipPositions[x][y]) {
                 continue;
@@ -151,50 +156,11 @@ bool findPathWithExhaustiveSearch(ProblemData &problemData, int timestep,
                     continue;
                 }
 
-                if (problemData.constructPathForVisualization) {
-                    // Add the previous node as the method we used to get here. This is only needed to draw the path for
-                    // the output visualization. Small optimization: don't store predecessors for nodes that can't reach
-                    // the destination anyway.
-                    if (neighborPosition.distanceTo(portRoyal) <= TIME_STEPS - timestep) {
-                        Position2D &predecessor = problemData.nodePredecessors[timestep][neighborPosition];
-                        predecessor = previousPosition;
-                    }
-                }
 
                 // If we reach Port Royal, we win.
                 if (neighborPosition == portRoyal) {
-                    if (problemData.outputVisualization) {
-                        // We flip the search buffer back to the previous one to prevent drawing a half finished buffer
-                        // to screen (purely aesthetic).
-                        problemData.flipSearchBuffers();
-                    }
-                    if (problemData.constructPathForVisualization) {
-                        try {
-                            // Trace back our path from the end to the beginning. This is just used to draw a path into
-                            // the output video
-                            Position2D pathTraceback = neighborPosition;
-                            pathOutput.resize(timestep + 1);
-                            int tracebackTimestep = timestep;
-                            while (pathTraceback != start) {
-                                if (tracebackTimestep <= 0) {
-                                    std::cerr << "Traceback did not lead back to origin before timestep 0!"
-                                              << std::endl;
-                                    break;
-                                }
-                                pathOutput[tracebackTimestep] = pathTraceback;
-                                pathTraceback = problemData.nodePredecessors[tracebackTimestep].at(pathTraceback);
-                                tracebackTimestep--;
-                            }
-                        } catch (std::out_of_range& e) {
-                            std::cerr << "Path traceback out of range: " << e.what() << std::endl;
-                        }
-                    }
-					//#pragma omp critical
-					//{
-                    //found = 1;
-					//}
-					//break;
-					return true;
+					//return true;
+					found = true;
                 }
 
                 currentShipPositions[neighborPosition.x][neighborPosition.y] = true;
@@ -202,14 +168,13 @@ bool findPathWithExhaustiveSearch(ProblemData &problemData, int timestep,
             }
         }
     }
-	//if (found)
-	//	return true;
+	}
     // This is not strictly required but can be used to track how much additional memory our path traceback structures
     // are using.
-    problemData.numPredecessors += problemData.nodePredecessors[timestep].size();
+    //problemData.numPredecessors += problemData.nodePredecessors[timestep].size();
 //    std::cerr << "Possible positions: " << numPossiblePositions << " (" << problemData.numPredecessors
 //              << " predecessors) " << std::endl;
-    return false;
+    return found;
 }
 
 
@@ -217,6 +182,11 @@ bool findPathWithExhaustiveSearch(ProblemData &problemData, int timestep,
  * Your main simulation routine.
  */
 int main(int argc, char *argv[]) {
+	using namespace std::chrono;
+	high_resolution_clock::time_point start, end;
+	duration<double> time_span;
+	double time_waves = 0;
+	double time_search = 0;
 	omp_set_nested(1);
 	//omp_set_num_threads(32);
     bool outputVisualization = false;
@@ -267,8 +237,9 @@ int main(int argc, char *argv[]) {
     /*
      * TODO@Students: On the submission server, we are solving more than just one problem
      */
+	omp_set_num_threads(2);
 	int pathlengths[numProblems];
-	#pragma omp parallel for schedule(static, 1)
+	#pragma omp parallel for 
     for (int problem = 0; problem < numProblems; ++problem) {
         auto *problemData = new ProblemData();
         problemData->outputVisualization = outputVisualization;
@@ -291,15 +262,24 @@ int main(int argc, char *argv[]) {
         for (int t = 2; t < TIME_STEPS; t++) {
 //        std::cerr << "Simulating storms" << std::endl;
             // First simulate all cycles of the storm
+			start = high_resolution_clock::now();
             simulate_waves(*problemData, t);
+			end = high_resolution_clock::now();
+			time_span = duration_cast<duration<double>>(end - start);
+			time_waves += duration<double>(time_span).count();
 
 //        std::cerr << "Finding a path" << std::endl;
             // Help captain Sparrow navigate the waves
+			start = high_resolution_clock::now();
             if (findPathWithExhaustiveSearch(*problemData, t, path)) {
                 // The length of the path is one shorter than the time step because the first frame is not part of the
                 // pathfinding, and the second frame is always the start position.
                 pathLength = t - 1;
             }
+			end = high_resolution_clock::now();
+			time_span = duration_cast<duration<double>>(end - start);
+			time_search += duration<double>(time_span).count();
+
 
             if (outputVisualization) {
                 VideoOutput::writeVideoFrames(path, *problemData);
@@ -323,6 +303,8 @@ int main(int argc, char *argv[]) {
 
         delete problemData;
     }
+	std::cout << std::fixed;
+	std::cout << std::setprecision(5) <<  time_waves << " " << time_search << std::endl;
 	for (int i = 0; i < numProblems; i++)
 		Utility::writeOutput(pathlengths[i]);
     // This stops the timer by printing DONE.
