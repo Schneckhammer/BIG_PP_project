@@ -7,6 +7,6 @@ student_submission: student_submission.cpp
 	g++ -std=c++17 -Wall -Wextra -o student_submission -O3 -g student_submission.cpp -lpthread -lm
 
 generate_cheating: generate_cheating.cpp
-	g++ -std=c++17 -Wall -Wextra -o generate_training_set -O3 -g generate_training_set.cpp -lpthread -lm
+	g++ -std=c++17 -Wall -Wextra -o generate_cheating -O3 -g generate_cheating.cpp -lpthread -lm
 clean:
 	rm -f sequential_implementation student_submission mandelbrot.ppm

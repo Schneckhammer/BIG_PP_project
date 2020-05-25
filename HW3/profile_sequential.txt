@@ -1,0 +1,418 @@
+Flat profile:
+
+Each sample counts as 0.01 seconds.
+  %   cumulative   self              self     total           
+ time   seconds   seconds    calls  ms/call  ms/call  name    
+ 48.88     29.83    29.83      407    73.29   110.20  simulate_waves(ProblemData&, int)
+ 24.61     44.85    15.02 779652456     0.00     0.00  float const& std::clamp<float>(float const&, float const&, float const&)
+ 13.93     53.35     8.50      407    20.88    36.88  findPathWithExhaustiveSearch(ProblemData&, int, std::vector<Position2D, std::allocator<Position2D> >&)
+  6.52     57.33     3.98 160947667     0.00     0.00  Position2D::operator+(Position2D const&) const
+  3.72     59.60     2.27 178834407     0.00     0.00  Position2D::Position2D(int, int)
+  1.23     60.35     0.75                             __gnu_cxx::new_allocator<std::__detail::_Hash_node_base*>::max_size() const
+  0.48     60.64     0.29      600     0.48     0.48  std::_Hashtable<Position2D, std::pair<Position2D const, Position2D>, std::allocator<std::pair<Position2D const, Position2D> >, std::__detail::_Select1st, std::equal_to<Position2D>, Position2DHash, std::__detail::_Mod_range_hashing, std::__detail::_Default_ranged_hash, std::__detail::_Prime_rehash_policy, std::__detail::_Hashtable_traits<true, false, true> >::~_Hashtable()
+  0.43     60.90     0.26 18029114     0.00     0.00  Position2D::operator==(Position2D const&) const
+  0.13     60.98     0.08                             std::__detail::_Prime_rehash_policy::_M_reset(unsigned long)
+  0.08     61.03     0.05        2    25.00    25.00  Position2D::Position2D()
+  0.00     61.03     0.00      600     0.00     0.00  __gnu_cxx::new_allocator<std::__detail::_Hash_node<std::pair<Position2D const, Position2D>, true> >::new_allocator()
+  0.00     61.03     0.00      600     0.00     0.00  __gnu_cxx::new_allocator<std::__detail::_Hash_node<std::pair<Position2D const, Position2D>, true> >::~new_allocator()
+  0.00     61.03     0.00      600     0.00     0.00  std::_Hashtable<Position2D, std::pair<Position2D const, Position2D>, std::allocator<std::pair<Position2D const, Position2D> >, std::__detail::_Select1st, std::equal_to<Position2D>, Position2DHash, std::__detail::_Mod_range_hashing, std::__detail::_Default_ranged_hash, std::__detail::_Prime_rehash_policy, std::__detail::_Hashtable_traits<true, false, true> >::_M_uses_single_bucket(std::__detail::_Hash_node_base**) const
+  0.00     61.03     0.00      600     0.00     0.00  std::_Hashtable<Position2D, std::pair<Position2D const, Position2D>, std::allocator<std::pair<Position2D const, Position2D> >, std::__detail::_Select1st, std::equal_to<Position2D>, Position2DHash, std::__detail::_Mod_range_hashing, std::__detail::_Default_ranged_hash, std::__detail::_Prime_rehash_policy, std::__detail::_Hashtable_traits<true, false, true> >::_M_begin() const
+  0.00     61.03     0.00      600     0.00     0.00  std::allocator<std::__detail::_Hash_node<std::pair<Position2D const, Position2D>, true> >::allocator()
+  0.00     61.03     0.00      600     0.00     0.00  std::allocator<std::__detail::_Hash_node<std::pair<Position2D const, Position2D>, true> >::~allocator()
+  0.00     61.03     0.00      600     0.00     0.00  std::_Hashtable<Position2D, std::pair<Position2D const, Position2D>, std::allocator<std::pair<Position2D const, Position2D> >, std::__detail::_Select1st, std::equal_to<Position2D>, Position2DHash, std::__detail::_Mod_range_hashing, std::__detail::_Default_ranged_hash, std::__detail::_Prime_rehash_policy, std::__detail::_Hashtable_traits<true, false, true> >::_M_deallocate_buckets(std::__detail::_Hash_node_base**, unsigned long)
+  0.00     61.03     0.00      600     0.00     0.00  std::_Hashtable<Position2D, std::pair<Position2D const, Position2D>, std::allocator<std::pair<Position2D const, Position2D> >, std::__detail::_Select1st, std::equal_to<Position2D>, Position2DHash, std::__detail::_Mod_range_hashing, std::__detail::_Default_ranged_hash, std::__detail::_Prime_rehash_policy, std::__detail::_Hashtable_traits<true, false, true> >::_M_deallocate_buckets()
+  0.00     61.03     0.00      600     0.00     0.00  std::_Hashtable<Position2D, std::pair<Position2D const, Position2D>, std::allocator<std::pair<Position2D const, Position2D> >, std::__detail::_Select1st, std::equal_to<Position2D>, Position2DHash, std::__detail::_Mod_range_hashing, std::__detail::_Default_ranged_hash, std::__detail::_Prime_rehash_policy, std::__detail::_Hashtable_traits<true, false, true> >::clear()
+  0.00     61.03     0.00      600     0.00     0.00  std::_Hashtable<Position2D, std::pair<Position2D const, Position2D>, std::allocator<std::pair<Position2D const, Position2D> >, std::__detail::_Select1st, std::equal_to<Position2D>, Position2DHash, std::__detail::_Mod_range_hashing, std::__detail::_Default_ranged_hash, std::__detail::_Prime_rehash_policy, std::__detail::_Hashtable_traits<true, false, true> >::_Hashtable()
+  0.00     61.03     0.00      600     0.00     0.00  std::unordered_map<Position2D, Position2D, Position2DHash, std::equal_to<Position2D>, std::allocator<std::pair<Position2D const, Position2D> > >::unordered_map()
+  0.00     61.03     0.00      600     0.00     0.48  std::unordered_map<Position2D, Position2D, Position2DHash, std::equal_to<Position2D>, std::allocator<std::pair<Position2D const, Position2D> > >::~unordered_map()
+  0.00     61.03     0.00      600     0.00     0.00  std::__detail::_Hash_node_base::_Hash_node_base()
+  0.00     61.03     0.00      600     0.00     0.00  std::__detail::_Hashtable_alloc<std::allocator<std::__detail::_Hash_node<std::pair<Position2D const, Position2D>, true> > >::_M_deallocate_nodes(std::__detail::_Hash_node<std::pair<Position2D const, Position2D>, true>*)
+  0.00     61.03     0.00      600     0.00     0.00  std::__detail::_Hashtable_alloc<std::allocator<std::__detail::_Hash_node<std::pair<Position2D const, Position2D>, true> > >::_Hashtable_alloc()
+  0.00     61.03     0.00      600     0.00     0.00  std::__detail::_Hashtable_alloc<std::allocator<std::__detail::_Hash_node<std::pair<Position2D const, Position2D>, true> > >::~_Hashtable_alloc()
+  0.00     61.03     0.00      600     0.00     0.00  std::__detail::_Prime_rehash_policy::_Prime_rehash_policy(float)
+  0.00     61.03     0.00      600     0.00     0.00  std::__detail::_Hashtable_ebo_helper<0, std::allocator<std::__detail::_Hash_node<std::pair<Position2D const, Position2D>, true> >, true>::_Hashtable_ebo_helper()
+  0.00     61.03     0.00      600     0.00     0.00  std::__detail::_Hashtable_ebo_helper<0, std::allocator<std::__detail::_Hash_node<std::pair<Position2D const, Position2D>, true> >, true>::~_Hashtable_ebo_helper()
+  0.00     61.03     0.00      406     0.00     0.00  ProblemData::flipWaveBuffers()
+  0.00     61.03     0.00      406     0.00     0.00  ProblemData::flipSearchBuffers()
+  0.00     61.03     0.00      406     0.00     0.00  std::_Hashtable<Position2D, std::pair<Position2D const, Position2D>, std::allocator<std::pair<Position2D const, Position2D> >, std::__detail::_Select1st, std::equal_to<Position2D>, Position2DHash, std::__detail::_Mod_range_hashing, std::__detail::_Default_ranged_hash, std::__detail::_Prime_rehash_policy, std::__detail::_Hashtable_traits<true, false, true> >::size() const
+  0.00     61.03     0.00      406     0.00     0.00  std::unordered_map<Position2D, Position2D, Position2DHash, std::equal_to<Position2D>, std::allocator<std::pair<Position2D const, Position2D> > >::size() const
+  0.00     61.03     0.00        1     0.00     0.00  _GLOBAL__sub_I__Z14simulate_wavesR11ProblemDatai
+  0.00     61.03     0.00        1     0.00     0.00  __static_initialization_and_destruction_0(int, int)
+  0.00     61.03     0.00        1     0.00    50.00  ProblemData::ProblemData()
+  0.00     61.03     0.00        1     0.00   290.00  ProblemData::~ProblemData()
+  0.00     61.03     0.00        1     0.00     0.00  __gnu_cxx::new_allocator<Position2D>::new_allocator()
+  0.00     61.03     0.00        1     0.00     0.00  __gnu_cxx::new_allocator<Position2D>::~new_allocator()
+  0.00     61.03     0.00        1     0.00     0.00  std::allocator<Position2D>::allocator()
+  0.00     61.03     0.00        1     0.00     0.00  std::allocator<Position2D>::~allocator()
+  0.00     61.03     0.00        1     0.00     0.00  void std::_Destroy_aux<true>::__destroy<Position2D*>(Position2D*, Position2D*)
+  0.00     61.03     0.00        1     0.00     0.00  std::_Vector_base<Position2D, std::allocator<Position2D> >::_Vector_impl::_Vector_impl()
+  0.00     61.03     0.00        1     0.00     0.00  std::_Vector_base<Position2D, std::allocator<Position2D> >::_Vector_impl::~_Vector_impl()
+  0.00     61.03     0.00        1     0.00     0.00  std::_Vector_base<Position2D, std::allocator<Position2D> >::_M_deallocate(Position2D*, unsigned long)
+  0.00     61.03     0.00        1     0.00     0.00  std::_Vector_base<Position2D, std::allocator<Position2D> >::_M_get_Tp_allocator()
+  0.00     61.03     0.00        1     0.00     0.00  std::_Vector_base<Position2D, std::allocator<Position2D> >::_Vector_base()
+  0.00     61.03     0.00        1     0.00     0.00  std::_Vector_base<Position2D, std::allocator<Position2D> >::~_Vector_base()
+  0.00     61.03     0.00        1     0.00     0.00  std::vector<Position2D, std::allocator<Position2D> >::vector()
+  0.00     61.03     0.00        1     0.00     0.00  std::vector<Position2D, std::allocator<Position2D> >::~vector()
+  0.00     61.03     0.00        1     0.00     0.00  void std::_Destroy<Position2D*>(Position2D*, Position2D*)
+  0.00     61.03     0.00        1     0.00     0.00  void std::_Destroy<Position2D*, Position2D>(Position2D*, Position2D*, std::allocator<Position2D>&)
+
+ %         the percentage of the total running time of the
+time       program used by this function.
+
+cumulative a running sum of the number of seconds accounted
+ seconds   for by this function and those listed above it.
+
+ self      the number of seconds accounted for by this
+seconds    function alone.  This is the major sort for this
+           listing.
+
+calls      the number of times this function was invoked, if
+           this function is profiled, else blank.
+
+ self      the average number of milliseconds spent in this
+ms/call    function per call, if this function is profiled,
+	   else blank.
+
+ total     the average number of milliseconds spent in this
+ms/call    function and its descendents per call, if this
+	   function is profiled, else blank.
+
+name       the name of the function.  This is the minor sort
+           for this listing. The index shows the location of
+	   the function in the gprof listing. If the index is
+	   in parenthesis it shows where it would appear in
+	   the gprof listing if it were to be printed.
+
+Copyright (C) 2012-2018 Free Software Foundation, Inc.
+
+Copying and distribution of this file, with or without modification,
+are permitted in any medium without royalty provided the copyright
+notice and this notice are preserved.
+
+		     Call graph (explanation follows)
+
+
+granularity: each sample hit covers 2 byte(s) for 0.02% of 61.03 seconds
+
+index % time    self  children    called     name
+                                                 <spontaneous>
+[1]     98.6    0.00   60.20                 main [1]
+               29.83   15.02     407/407         simulate_waves(ProblemData&, int) [2]
+                8.50    6.51     407/407         findPathWithExhaustiveSearch(ProblemData&, int, std::vector<Position2D, std::allocator<Position2D> >&) [4]
+                0.00    0.29       1/1           ProblemData::~ProblemData() [10]
+                0.00    0.05       1/1           ProblemData::ProblemData() [14]
+                0.00    0.00     406/406         ProblemData::flipSearchBuffers() [40]
+                0.00    0.00     406/406         ProblemData::flipWaveBuffers() [39]
+                0.00    0.00       1/1           std::vector<Position2D, std::allocator<Position2D> >::vector() [56]
+                0.00    0.00       1/1           std::vector<Position2D, std::allocator<Position2D> >::~vector() [57]
+-----------------------------------------------
+               29.83   15.02     407/407         main [1]
+[2]     73.5   29.83   15.02     407         simulate_waves(ProblemData&, int) [2]
+               15.02    0.00 779652456/779652456     float const& std::clamp<float>(float const&, float const&, float const&) [3]
+-----------------------------------------------
+               15.02    0.00 779652456/779652456     simulate_waves(ProblemData&, int) [2]
+[3]     24.6   15.02    0.00 779652456         float const& std::clamp<float>(float const&, float const&, float const&) [3]
+-----------------------------------------------
+                8.50    6.51     407/407         main [1]
+[4]     24.6    8.50    6.51     407         findPathWithExhaustiveSearch(ProblemData&, int, std::vector<Position2D, std::allocator<Position2D> >&) [4]
+                3.98    2.04 160947667/160947667     Position2D::operator+(Position2D const&) const [5]
+                0.26    0.00 18029114/18029114     Position2D::operator==(Position2D const&) const [11]
+                0.23    0.00 17886738/178834407     Position2D::Position2D(int, int) [6]
+                0.00    0.00     406/406         std::unordered_map<Position2D, Position2D, Position2DHash, std::equal_to<Position2D>, std::allocator<std::pair<Position2D const, Position2D> > >::size() const [42]
+-----------------------------------------------
+                3.98    2.04 160947667/160947667     findPathWithExhaustiveSearch(ProblemData&, int, std::vector<Position2D, std::allocator<Position2D> >&) [4]
+[5]      9.9    3.98    2.04 160947667         Position2D::operator+(Position2D const&) const [5]
+                2.04    0.00 160947667/178834407     Position2D::Position2D(int, int) [6]
+-----------------------------------------------
+                0.00    0.00       2/178834407     Position2D::Position2D() [13]
+                0.23    0.00 17886738/178834407     findPathWithExhaustiveSearch(ProblemData&, int, std::vector<Position2D, std::allocator<Position2D> >&) [4]
+                2.04    0.00 160947667/178834407     Position2D::operator+(Position2D const&) const [5]
+[6]      3.7    2.27    0.00 178834407         Position2D::Position2D(int, int) [6]
+-----------------------------------------------
+                                                 <spontaneous>
+[7]      1.2    0.75    0.00                 __gnu_cxx::new_allocator<std::__detail::_Hash_node_base*>::max_size() const [7]
+-----------------------------------------------
+                0.29    0.00     600/600         std::unordered_map<Position2D, Position2D, Position2DHash, std::equal_to<Position2D>, std::allocator<std::pair<Position2D const, Position2D> > >::~unordered_map() [9]
+[8]      0.5    0.29    0.00     600         std::_Hashtable<Position2D, std::pair<Position2D const, Position2D>, std::allocator<std::pair<Position2D const, Position2D> >, std::__detail::_Select1st, std::equal_to<Position2D>, Position2DHash, std::__detail::_Mod_range_hashing, std::__detail::_Default_ranged_hash, std::__detail::_Prime_rehash_policy, std::__detail::_Hashtable_traits<true, false, true> >::~_Hashtable() [8]
+                0.00    0.00     600/600         std::_Hashtable<Position2D, std::pair<Position2D const, Position2D>, std::allocator<std::pair<Position2D const, Position2D> >, std::__detail::_Select1st, std::equal_to<Position2D>, Position2DHash, std::__detail::_Mod_range_hashing, std::__detail::_Default_ranged_hash, std::__detail::_Prime_rehash_policy, std::__detail::_Hashtable_traits<true, false, true> >::clear() [29]
+                0.00    0.00     600/600         std::__detail::_Hashtable_alloc<std::allocator<std::__detail::_Hash_node<std::pair<Position2D const, Position2D>, true> > >::~_Hashtable_alloc() [35]
+                0.00    0.00     600/600         std::_Hashtable<Position2D, std::pair<Position2D const, Position2D>, std::allocator<std::pair<Position2D const, Position2D> >, std::__detail::_Select1st, std::equal_to<Position2D>, Position2DHash, std::__detail::_Mod_range_hashing, std::__detail::_Default_ranged_hash, std::__detail::_Prime_rehash_policy, std::__detail::_Hashtable_traits<true, false, true> >::_M_deallocate_buckets() [28]
+-----------------------------------------------
+                0.00    0.29     600/600         ProblemData::~ProblemData() [10]
+[9]      0.5    0.00    0.29     600         std::unordered_map<Position2D, Position2D, Position2DHash, std::equal_to<Position2D>, std::allocator<std::pair<Position2D const, Position2D> > >::~unordered_map() [9]
+                0.29    0.00     600/600         std::_Hashtable<Position2D, std::pair<Position2D const, Position2D>, std::allocator<std::pair<Position2D const, Position2D> >, std::__detail::_Select1st, std::equal_to<Position2D>, Position2DHash, std::__detail::_Mod_range_hashing, std::__detail::_Default_ranged_hash, std::__detail::_Prime_rehash_policy, std::__detail::_Hashtable_traits<true, false, true> >::~_Hashtable() [8]
+-----------------------------------------------
+                0.00    0.29       1/1           main [1]
+[10]     0.5    0.00    0.29       1         ProblemData::~ProblemData() [10]
+                0.00    0.29     600/600         std::unordered_map<Position2D, Position2D, Position2DHash, std::equal_to<Position2D>, std::allocator<std::pair<Position2D const, Position2D> > >::~unordered_map() [9]
+-----------------------------------------------
+                0.26    0.00 18029114/18029114     findPathWithExhaustiveSearch(ProblemData&, int, std::vector<Position2D, std::allocator<Position2D> >&) [4]
+[11]     0.4    0.26    0.00 18029114         Position2D::operator==(Position2D const&) const [11]
+-----------------------------------------------
+                                                 <spontaneous>
+[12]     0.1    0.08    0.00                 std::__detail::_Prime_rehash_policy::_M_reset(unsigned long) [12]
+-----------------------------------------------
+                0.05    0.00       2/2           ProblemData::ProblemData() [14]
+[13]     0.1    0.05    0.00       2         Position2D::Position2D() [13]
+                0.00    0.00       2/178834407     Position2D::Position2D(int, int) [6]
+-----------------------------------------------
+                0.00    0.05       1/1           main [1]
+[14]     0.1    0.00    0.05       1         ProblemData::ProblemData() [14]
+                0.05    0.00       2/2           Position2D::Position2D() [13]
+                0.00    0.00     600/600         std::unordered_map<Position2D, Position2D, Position2DHash, std::equal_to<Position2D>, std::allocator<std::pair<Position2D const, Position2D> > >::unordered_map() [31]
+-----------------------------------------------
+                0.00    0.00     600/600         std::allocator<std::__detail::_Hash_node<std::pair<Position2D const, Position2D>, true> >::allocator() [25]
+[21]     0.0    0.00    0.00     600         __gnu_cxx::new_allocator<std::__detail::_Hash_node<std::pair<Position2D const, Position2D>, true> >::new_allocator() [21]
+-----------------------------------------------
+                0.00    0.00     600/600         std::allocator<std::__detail::_Hash_node<std::pair<Position2D const, Position2D>, true> >::~allocator() [26]
+[22]     0.0    0.00    0.00     600         __gnu_cxx::new_allocator<std::__detail::_Hash_node<std::pair<Position2D const, Position2D>, true> >::~new_allocator() [22]
+-----------------------------------------------
+                0.00    0.00     600/600         std::_Hashtable<Position2D, std::pair<Position2D const, Position2D>, std::allocator<std::pair<Position2D const, Position2D> >, std::__detail::_Select1st, std::equal_to<Position2D>, Position2DHash, std::__detail::_Mod_range_hashing, std::__detail::_Default_ranged_hash, std::__detail::_Prime_rehash_policy, std::__detail::_Hashtable_traits<true, false, true> >::_M_deallocate_buckets(std::__detail::_Hash_node_base**, unsigned long) [27]
+[23]     0.0    0.00    0.00     600         std::_Hashtable<Position2D, std::pair<Position2D const, Position2D>, std::allocator<std::pair<Position2D const, Position2D> >, std::__detail::_Select1st, std::equal_to<Position2D>, Position2DHash, std::__detail::_Mod_range_hashing, std::__detail::_Default_ranged_hash, std::__detail::_Prime_rehash_policy, std::__detail::_Hashtable_traits<true, false, true> >::_M_uses_single_bucket(std::__detail::_Hash_node_base**) const [23]
+-----------------------------------------------
+                0.00    0.00     600/600         std::_Hashtable<Position2D, std::pair<Position2D const, Position2D>, std::allocator<std::pair<Position2D const, Position2D> >, std::__detail::_Select1st, std::equal_to<Position2D>, Position2DHash, std::__detail::_Mod_range_hashing, std::__detail::_Default_ranged_hash, std::__detail::_Prime_rehash_policy, std::__detail::_Hashtable_traits<true, false, true> >::clear() [29]
+[24]     0.0    0.00    0.00     600         std::_Hashtable<Position2D, std::pair<Position2D const, Position2D>, std::allocator<std::pair<Position2D const, Position2D> >, std::__detail::_Select1st, std::equal_to<Position2D>, Position2DHash, std::__detail::_Mod_range_hashing, std::__detail::_Default_ranged_hash, std::__detail::_Prime_rehash_policy, std::__detail::_Hashtable_traits<true, false, true> >::_M_begin() const [24]
+-----------------------------------------------
+                0.00    0.00     600/600         std::__detail::_Hashtable_ebo_helper<0, std::allocator<std::__detail::_Hash_node<std::pair<Position2D const, Position2D>, true> >, true>::_Hashtable_ebo_helper() [37]
+[25]     0.0    0.00    0.00     600         std::allocator<std::__detail::_Hash_node<std::pair<Position2D const, Position2D>, true> >::allocator() [25]
+                0.00    0.00     600/600         __gnu_cxx::new_allocator<std::__detail::_Hash_node<std::pair<Position2D const, Position2D>, true> >::new_allocator() [21]
+-----------------------------------------------
+                0.00    0.00     600/600         std::__detail::_Hashtable_ebo_helper<0, std::allocator<std::__detail::_Hash_node<std::pair<Position2D const, Position2D>, true> >, true>::~_Hashtable_ebo_helper() [38]
+[26]     0.0    0.00    0.00     600         std::allocator<std::__detail::_Hash_node<std::pair<Position2D const, Position2D>, true> >::~allocator() [26]
+                0.00    0.00     600/600         __gnu_cxx::new_allocator<std::__detail::_Hash_node<std::pair<Position2D const, Position2D>, true> >::~new_allocator() [22]
+-----------------------------------------------
+                0.00    0.00     600/600         std::_Hashtable<Position2D, std::pair<Position2D const, Position2D>, std::allocator<std::pair<Position2D const, Position2D> >, std::__detail::_Select1st, std::equal_to<Position2D>, Position2DHash, std::__detail::_Mod_range_hashing, std::__detail::_Default_ranged_hash, std::__detail::_Prime_rehash_policy, std::__detail::_Hashtable_traits<true, false, true> >::_M_deallocate_buckets() [28]
+[27]     0.0    0.00    0.00     600         std::_Hashtable<Position2D, std::pair<Position2D const, Position2D>, std::allocator<std::pair<Position2D const, Position2D> >, std::__detail::_Select1st, std::equal_to<Position2D>, Position2DHash, std::__detail::_Mod_range_hashing, std::__detail::_Default_ranged_hash, std::__detail::_Prime_rehash_policy, std::__detail::_Hashtable_traits<true, false, true> >::_M_deallocate_buckets(std::__detail::_Hash_node_base**, unsigned long) [27]
+                0.00    0.00     600/600         std::_Hashtable<Position2D, std::pair<Position2D const, Position2D>, std::allocator<std::pair<Position2D const, Position2D> >, std::__detail::_Select1st, std::equal_to<Position2D>, Position2DHash, std::__detail::_Mod_range_hashing, std::__detail::_Default_ranged_hash, std::__detail::_Prime_rehash_policy, std::__detail::_Hashtable_traits<true, false, true> >::_M_uses_single_bucket(std::__detail::_Hash_node_base**) const [23]
+-----------------------------------------------
+                0.00    0.00     600/600         std::_Hashtable<Position2D, std::pair<Position2D const, Position2D>, std::allocator<std::pair<Position2D const, Position2D> >, std::__detail::_Select1st, std::equal_to<Position2D>, Position2DHash, std::__detail::_Mod_range_hashing, std::__detail::_Default_ranged_hash, std::__detail::_Prime_rehash_policy, std::__detail::_Hashtable_traits<true, false, true> >::~_Hashtable() [8]
+[28]     0.0    0.00    0.00     600         std::_Hashtable<Position2D, std::pair<Position2D const, Position2D>, std::allocator<std::pair<Position2D const, Position2D> >, std::__detail::_Select1st, std::equal_to<Position2D>, Position2DHash, std::__detail::_Mod_range_hashing, std::__detail::_Default_ranged_hash, std::__detail::_Prime_rehash_policy, std::__detail::_Hashtable_traits<true, false, true> >::_M_deallocate_buckets() [28]
+                0.00    0.00     600/600         std::_Hashtable<Position2D, std::pair<Position2D const, Position2D>, std::allocator<std::pair<Position2D const, Position2D> >, std::__detail::_Select1st, std::equal_to<Position2D>, Position2DHash, std::__detail::_Mod_range_hashing, std::__detail::_Default_ranged_hash, std::__detail::_Prime_rehash_policy, std::__detail::_Hashtable_traits<true, false, true> >::_M_deallocate_buckets(std::__detail::_Hash_node_base**, unsigned long) [27]
+-----------------------------------------------
+                0.00    0.00     600/600         std::_Hashtable<Position2D, std::pair<Position2D const, Position2D>, std::allocator<std::pair<Position2D const, Position2D> >, std::__detail::_Select1st, std::equal_to<Position2D>, Position2DHash, std::__detail::_Mod_range_hashing, std::__detail::_Default_ranged_hash, std::__detail::_Prime_rehash_policy, std::__detail::_Hashtable_traits<true, false, true> >::~_Hashtable() [8]
+[29]     0.0    0.00    0.00     600         std::_Hashtable<Position2D, std::pair<Position2D const, Position2D>, std::allocator<std::pair<Position2D const, Position2D> >, std::__detail::_Select1st, std::equal_to<Position2D>, Position2DHash, std::__detail::_Mod_range_hashing, std::__detail::_Default_ranged_hash, std::__detail::_Prime_rehash_policy, std::__detail::_Hashtable_traits<true, false, true> >::clear() [29]
+                0.00    0.00     600/600         std::_Hashtable<Position2D, std::pair<Position2D const, Position2D>, std::allocator<std::pair<Position2D const, Position2D> >, std::__detail::_Select1st, std::equal_to<Position2D>, Position2DHash, std::__detail::_Mod_range_hashing, std::__detail::_Default_ranged_hash, std::__detail::_Prime_rehash_policy, std::__detail::_Hashtable_traits<true, false, true> >::_M_begin() const [24]
+                0.00    0.00     600/600         std::__detail::_Hashtable_alloc<std::allocator<std::__detail::_Hash_node<std::pair<Position2D const, Position2D>, true> > >::_M_deallocate_nodes(std::__detail::_Hash_node<std::pair<Position2D const, Position2D>, true>*) [33]
+-----------------------------------------------
+                0.00    0.00     600/600         std::unordered_map<Position2D, Position2D, Position2DHash, std::equal_to<Position2D>, std::allocator<std::pair<Position2D const, Position2D> > >::unordered_map() [31]
+[30]     0.0    0.00    0.00     600         std::_Hashtable<Position2D, std::pair<Position2D const, Position2D>, std::allocator<std::pair<Position2D const, Position2D> >, std::__detail::_Select1st, std::equal_to<Position2D>, Position2DHash, std::__detail::_Mod_range_hashing, std::__detail::_Default_ranged_hash, std::__detail::_Prime_rehash_policy, std::__detail::_Hashtable_traits<true, false, true> >::_Hashtable() [30]
+                0.00    0.00     600/600         std::__detail::_Hashtable_alloc<std::allocator<std::__detail::_Hash_node<std::pair<Position2D const, Position2D>, true> > >::_Hashtable_alloc() [34]
+                0.00    0.00     600/600         std::__detail::_Hash_node_base::_Hash_node_base() [32]
+                0.00    0.00     600/600         std::__detail::_Prime_rehash_policy::_Prime_rehash_policy(float) [36]
+-----------------------------------------------
+                0.00    0.00     600/600         ProblemData::ProblemData() [14]
+[31]     0.0    0.00    0.00     600         std::unordered_map<Position2D, Position2D, Position2DHash, std::equal_to<Position2D>, std::allocator<std::pair<Position2D const, Position2D> > >::unordered_map() [31]
+                0.00    0.00     600/600         std::_Hashtable<Position2D, std::pair<Position2D const, Position2D>, std::allocator<std::pair<Position2D const, Position2D> >, std::__detail::_Select1st, std::equal_to<Position2D>, Position2DHash, std::__detail::_Mod_range_hashing, std::__detail::_Default_ranged_hash, std::__detail::_Prime_rehash_policy, std::__detail::_Hashtable_traits<true, false, true> >::_Hashtable() [30]
+-----------------------------------------------
+                0.00    0.00     600/600         std::_Hashtable<Position2D, std::pair<Position2D const, Position2D>, std::allocator<std::pair<Position2D const, Position2D> >, std::__detail::_Select1st, std::equal_to<Position2D>, Position2DHash, std::__detail::_Mod_range_hashing, std::__detail::_Default_ranged_hash, std::__detail::_Prime_rehash_policy, std::__detail::_Hashtable_traits<true, false, true> >::_Hashtable() [30]
+[32]     0.0    0.00    0.00     600         std::__detail::_Hash_node_base::_Hash_node_base() [32]
+-----------------------------------------------
+                0.00    0.00     600/600         std::_Hashtable<Position2D, std::pair<Position2D const, Position2D>, std::allocator<std::pair<Position2D const, Position2D> >, std::__detail::_Select1st, std::equal_to<Position2D>, Position2DHash, std::__detail::_Mod_range_hashing, std::__detail::_Default_ranged_hash, std::__detail::_Prime_rehash_policy, std::__detail::_Hashtable_traits<true, false, true> >::clear() [29]
+[33]     0.0    0.00    0.00     600         std::__detail::_Hashtable_alloc<std::allocator<std::__detail::_Hash_node<std::pair<Position2D const, Position2D>, true> > >::_M_deallocate_nodes(std::__detail::_Hash_node<std::pair<Position2D const, Position2D>, true>*) [33]
+-----------------------------------------------
+                0.00    0.00     600/600         std::_Hashtable<Position2D, std::pair<Position2D const, Position2D>, std::allocator<std::pair<Position2D const, Position2D> >, std::__detail::_Select1st, std::equal_to<Position2D>, Position2DHash, std::__detail::_Mod_range_hashing, std::__detail::_Default_ranged_hash, std::__detail::_Prime_rehash_policy, std::__detail::_Hashtable_traits<true, false, true> >::_Hashtable() [30]
+[34]     0.0    0.00    0.00     600         std::__detail::_Hashtable_alloc<std::allocator<std::__detail::_Hash_node<std::pair<Position2D const, Position2D>, true> > >::_Hashtable_alloc() [34]
+                0.00    0.00     600/600         std::__detail::_Hashtable_ebo_helper<0, std::allocator<std::__detail::_Hash_node<std::pair<Position2D const, Position2D>, true> >, true>::_Hashtable_ebo_helper() [37]
+-----------------------------------------------
+                0.00    0.00     600/600         std::_Hashtable<Position2D, std::pair<Position2D const, Position2D>, std::allocator<std::pair<Position2D const, Position2D> >, std::__detail::_Select1st, std::equal_to<Position2D>, Position2DHash, std::__detail::_Mod_range_hashing, std::__detail::_Default_ranged_hash, std::__detail::_Prime_rehash_policy, std::__detail::_Hashtable_traits<true, false, true> >::~_Hashtable() [8]
+[35]     0.0    0.00    0.00     600         std::__detail::_Hashtable_alloc<std::allocator<std::__detail::_Hash_node<std::pair<Position2D const, Position2D>, true> > >::~_Hashtable_alloc() [35]
+                0.00    0.00     600/600         std::__detail::_Hashtable_ebo_helper<0, std::allocator<std::__detail::_Hash_node<std::pair<Position2D const, Position2D>, true> >, true>::~_Hashtable_ebo_helper() [38]
+-----------------------------------------------
+                0.00    0.00     600/600         std::_Hashtable<Position2D, std::pair<Position2D const, Position2D>, std::allocator<std::pair<Position2D const, Position2D> >, std::__detail::_Select1st, std::equal_to<Position2D>, Position2DHash, std::__detail::_Mod_range_hashing, std::__detail::_Default_ranged_hash, std::__detail::_Prime_rehash_policy, std::__detail::_Hashtable_traits<true, false, true> >::_Hashtable() [30]
+[36]     0.0    0.00    0.00     600         std::__detail::_Prime_rehash_policy::_Prime_rehash_policy(float) [36]
+-----------------------------------------------
+                0.00    0.00     600/600         std::__detail::_Hashtable_alloc<std::allocator<std::__detail::_Hash_node<std::pair<Position2D const, Position2D>, true> > >::_Hashtable_alloc() [34]
+[37]     0.0    0.00    0.00     600         std::__detail::_Hashtable_ebo_helper<0, std::allocator<std::__detail::_Hash_node<std::pair<Position2D const, Position2D>, true> >, true>::_Hashtable_ebo_helper() [37]
+                0.00    0.00     600/600         std::allocator<std::__detail::_Hash_node<std::pair<Position2D const, Position2D>, true> >::allocator() [25]
+-----------------------------------------------
+                0.00    0.00     600/600         std::__detail::_Hashtable_alloc<std::allocator<std::__detail::_Hash_node<std::pair<Position2D const, Position2D>, true> > >::~_Hashtable_alloc() [35]
+[38]     0.0    0.00    0.00     600         std::__detail::_Hashtable_ebo_helper<0, std::allocator<std::__detail::_Hash_node<std::pair<Position2D const, Position2D>, true> >, true>::~_Hashtable_ebo_helper() [38]
+                0.00    0.00     600/600         std::allocator<std::__detail::_Hash_node<std::pair<Position2D const, Position2D>, true> >::~allocator() [26]
+-----------------------------------------------
+                0.00    0.00     406/406         main [1]
+[39]     0.0    0.00    0.00     406         ProblemData::flipWaveBuffers() [39]
+-----------------------------------------------
+                0.00    0.00     406/406         main [1]
+[40]     0.0    0.00    0.00     406         ProblemData::flipSearchBuffers() [40]
+-----------------------------------------------
+                0.00    0.00     406/406         std::unordered_map<Position2D, Position2D, Position2DHash, std::equal_to<Position2D>, std::allocator<std::pair<Position2D const, Position2D> > >::size() const [42]
+[41]     0.0    0.00    0.00     406         std::_Hashtable<Position2D, std::pair<Position2D const, Position2D>, std::allocator<std::pair<Position2D const, Position2D> >, std::__detail::_Select1st, std::equal_to<Position2D>, Position2DHash, std::__detail::_Mod_range_hashing, std::__detail::_Default_ranged_hash, std::__detail::_Prime_rehash_policy, std::__detail::_Hashtable_traits<true, false, true> >::size() const [41]
+-----------------------------------------------
+                0.00    0.00     406/406         findPathWithExhaustiveSearch(ProblemData&, int, std::vector<Position2D, std::allocator<Position2D> >&) [4]
+[42]     0.0    0.00    0.00     406         std::unordered_map<Position2D, Position2D, Position2DHash, std::equal_to<Position2D>, std::allocator<std::pair<Position2D const, Position2D> > >::size() const [42]
+                0.00    0.00     406/406         std::_Hashtable<Position2D, std::pair<Position2D const, Position2D>, std::allocator<std::pair<Position2D const, Position2D> >, std::__detail::_Select1st, std::equal_to<Position2D>, Position2DHash, std::__detail::_Mod_range_hashing, std::__detail::_Default_ranged_hash, std::__detail::_Prime_rehash_policy, std::__detail::_Hashtable_traits<true, false, true> >::size() const [41]
+-----------------------------------------------
+                0.00    0.00       1/1           __libc_csu_init [391]
+[43]     0.0    0.00    0.00       1         _GLOBAL__sub_I__Z14simulate_wavesR11ProblemDatai [43]
+                0.00    0.00       1/1           __static_initialization_and_destruction_0(int, int) [44]
+-----------------------------------------------
+                0.00    0.00       1/1           _GLOBAL__sub_I__Z14simulate_wavesR11ProblemDatai [43]
+[44]     0.0    0.00    0.00       1         __static_initialization_and_destruction_0(int, int) [44]
+-----------------------------------------------
+                0.00    0.00       1/1           std::allocator<Position2D>::allocator() [47]
+[45]     0.0    0.00    0.00       1         __gnu_cxx::new_allocator<Position2D>::new_allocator() [45]
+-----------------------------------------------
+                0.00    0.00       1/1           std::allocator<Position2D>::~allocator() [48]
+[46]     0.0    0.00    0.00       1         __gnu_cxx::new_allocator<Position2D>::~new_allocator() [46]
+-----------------------------------------------
+                0.00    0.00       1/1           std::_Vector_base<Position2D, std::allocator<Position2D> >::_Vector_impl::_Vector_impl() [50]
+[47]     0.0    0.00    0.00       1         std::allocator<Position2D>::allocator() [47]
+                0.00    0.00       1/1           __gnu_cxx::new_allocator<Position2D>::new_allocator() [45]
+-----------------------------------------------
+                0.00    0.00       1/1           std::_Vector_base<Position2D, std::allocator<Position2D> >::_Vector_impl::~_Vector_impl() [51]
+[48]     0.0    0.00    0.00       1         std::allocator<Position2D>::~allocator() [48]
+                0.00    0.00       1/1           __gnu_cxx::new_allocator<Position2D>::~new_allocator() [46]
+-----------------------------------------------
+                0.00    0.00       1/1           void std::_Destroy<Position2D*>(Position2D*, Position2D*) [58]
+[49]     0.0    0.00    0.00       1         void std::_Destroy_aux<true>::__destroy<Position2D*>(Position2D*, Position2D*) [49]
+-----------------------------------------------
+                0.00    0.00       1/1           std::_Vector_base<Position2D, std::allocator<Position2D> >::_Vector_base() [54]
+[50]     0.0    0.00    0.00       1         std::_Vector_base<Position2D, std::allocator<Position2D> >::_Vector_impl::_Vector_impl() [50]
+                0.00    0.00       1/1           std::allocator<Position2D>::allocator() [47]
+-----------------------------------------------
+                0.00    0.00       1/1           std::_Vector_base<Position2D, std::allocator<Position2D> >::~_Vector_base() [55]
+[51]     0.0    0.00    0.00       1         std::_Vector_base<Position2D, std::allocator<Position2D> >::_Vector_impl::~_Vector_impl() [51]
+                0.00    0.00       1/1           std::allocator<Position2D>::~allocator() [48]
+-----------------------------------------------
+                0.00    0.00       1/1           std::_Vector_base<Position2D, std::allocator<Position2D> >::~_Vector_base() [55]
+[52]     0.0    0.00    0.00       1         std::_Vector_base<Position2D, std::allocator<Position2D> >::_M_deallocate(Position2D*, unsigned long) [52]
+-----------------------------------------------
+                0.00    0.00       1/1           std::vector<Position2D, std::allocator<Position2D> >::~vector() [57]
+[53]     0.0    0.00    0.00       1         std::_Vector_base<Position2D, std::allocator<Position2D> >::_M_get_Tp_allocator() [53]
+-----------------------------------------------
+                0.00    0.00       1/1           std::vector<Position2D, std::allocator<Position2D> >::vector() [56]
+[54]     0.0    0.00    0.00       1         std::_Vector_base<Position2D, std::allocator<Position2D> >::_Vector_base() [54]
+                0.00    0.00       1/1           std::_Vector_base<Position2D, std::allocator<Position2D> >::_Vector_impl::_Vector_impl() [50]
+-----------------------------------------------
+                0.00    0.00       1/1           std::vector<Position2D, std::allocator<Position2D> >::~vector() [57]
+[55]     0.0    0.00    0.00       1         std::_Vector_base<Position2D, std::allocator<Position2D> >::~_Vector_base() [55]
+                0.00    0.00       1/1           std::_Vector_base<Position2D, std::allocator<Position2D> >::_Vector_impl::~_Vector_impl() [51]
+                0.00    0.00       1/1           std::_Vector_base<Position2D, std::allocator<Position2D> >::_M_deallocate(Position2D*, unsigned long) [52]
+-----------------------------------------------
+                0.00    0.00       1/1           main [1]
+[56]     0.0    0.00    0.00       1         std::vector<Position2D, std::allocator<Position2D> >::vector() [56]
+                0.00    0.00       1/1           std::_Vector_base<Position2D, std::allocator<Position2D> >::_Vector_base() [54]
+-----------------------------------------------
+                0.00    0.00       1/1           main [1]
+[57]     0.0    0.00    0.00       1         std::vector<Position2D, std::allocator<Position2D> >::~vector() [57]
+                0.00    0.00       1/1           std::_Vector_base<Position2D, std::allocator<Position2D> >::_M_get_Tp_allocator() [53]
+                0.00    0.00       1/1           void std::_Destroy<Position2D*, Position2D>(Position2D*, Position2D*, std::allocator<Position2D>&) [59]
+                0.00    0.00       1/1           std::_Vector_base<Position2D, std::allocator<Position2D> >::~_Vector_base() [55]
+-----------------------------------------------
+                0.00    0.00       1/1           void std::_Destroy<Position2D*, Position2D>(Position2D*, Position2D*, std::allocator<Position2D>&) [59]
+[58]     0.0    0.00    0.00       1         void std::_Destroy<Position2D*>(Position2D*, Position2D*) [58]
+                0.00    0.00       1/1           void std::_Destroy_aux<true>::__destroy<Position2D*>(Position2D*, Position2D*) [49]
+-----------------------------------------------
+                0.00    0.00       1/1           std::vector<Position2D, std::allocator<Position2D> >::~vector() [57]
+[59]     0.0    0.00    0.00       1         void std::_Destroy<Position2D*, Position2D>(Position2D*, Position2D*, std::allocator<Position2D>&) [59]
+                0.00    0.00       1/1           void std::_Destroy<Position2D*>(Position2D*, Position2D*) [58]
+-----------------------------------------------
+
+ This table describes the call tree of the program, and was sorted by
+ the total amount of time spent in each function and its children.
+
+ Each entry in this table consists of several lines.  The line with the
+ index number at the left hand margin lists the current function.
+ The lines above it list the functions that called this function,
+ and the lines below it list the functions this one called.
+ This line lists:
+     index	A unique number given to each element of the table.
+		Index numbers are sorted numerically.
+		The index number is printed next to every function name so
+		it is easier to look up where the function is in the table.
+
+     % time	This is the percentage of the `total' time that was spent
+		in this function and its children.  Note that due to
+		different viewpoints, functions excluded by options, etc,
+		these numbers will NOT add up to 100%.
+
+     self	This is the total amount of time spent in this function.
+
+     children	This is the total amount of time propagated into this
+		function by its children.
+
+     called	This is the number of times the function was called.
+		If the function called itself recursively, the number
+		only includes non-recursive calls, and is followed by
+		a `+' and the number of recursive calls.
+
+     name	The name of the current function.  The index number is
+		printed after it.  If the function is a member of a
+		cycle, the cycle number is printed between the
+		function's name and the index number.
+
+
+ For the function's parents, the fields have the following meanings:
+
+     self	This is the amount of time that was propagated directly
+		from the function into this parent.
+
+     children	This is the amount of time that was propagated from
+		the function's children into this parent.
+
+     called	This is the number of times this parent called the
+		function `/' the total number of times the function
+		was called.  Recursive calls to the function are not
+		included in the number after the `/'.
+
+     name	This is the name of the parent.  The parent's index
+		number is printed after it.  If the parent is a
+		member of a cycle, the cycle number is printed between
+		the name and the index number.
+
+ If the parents of the function cannot be determined, the word
+ `<spontaneous>' is printed in the `name' field, and all the other
+ fields are blank.
+
+ For the function's children, the fields have the following meanings:
+
+     self	This is the amount of time that was propagated directly
+		from the child into the function.
+
+     children	This is the amount of time that was propagated from the
+		child's children to the function.
+
+     called	This is the number of times the function called
+		this child `/' the total number of times the child
+		was called.  Recursive calls by the child are not
+		listed in the number after the `/'.
+
+     name	This is the name of the child.  The child's index
+		number is printed after it.  If the child is a
+		member of a cycle, the cycle number is printed
+		between the name and the index number.
+
+ If there are any cycles (circles) in the call graph, there is an
+ entry for the cycle-as-a-whole.  This entry shows who called the
+ cycle (as parents) and the members of the cycle (as children.)
+ The `+' recursive calls entry shows the number of function calls that
+ were internal to the cycle, and the calls entry for each member shows,
+ for that member, how many times it was called from other members of
+ the cycle.
+
+Copyright (C) 2012-2018 Free Software Foundation, Inc.
+
+Copying and distribution of this file, with or without modification,
+are permitted in any medium without royalty provided the copyright
+notice and this notice are preserved.
+
+Index by function name
+
+  [43] _GLOBAL__sub_I__Z14simulate_wavesR11ProblemDatai [41] std::_Hashtable<Position2D, std::pair<Position2D const, Position2D>, std::allocator<std::pair<Position2D const, Position2D> >, std::__detail::_Select1st, std::equal_to<Position2D>, Position2DHash, std::__detail::_Mod_range_hashing, std::__detail::_Default_ranged_hash, std::__detail::_Prime_rehash_policy, std::__detail::_Hashtable_traits<true, false, true> >::size() const [55] std::_Vector_base<Position2D, std::allocator<Position2D> >::~_Vector_base()
+   [2] simulate_waves(ProblemData&, int) [24] std::_Hashtable<Position2D, std::pair<Position2D const, Position2D>, std::allocator<std::pair<Position2D const, Position2D> >, std::__detail::_Select1st, std::equal_to<Position2D>, Position2DHash, std::__detail::_Mod_range_hashing, std::__detail::_Default_ranged_hash, std::__detail::_Prime_rehash_policy, std::__detail::_Hashtable_traits<true, false, true> >::_M_begin() const [31] std::unordered_map<Position2D, Position2D, Position2DHash, std::equal_to<Position2D>, std::allocator<std::pair<Position2D const, Position2D> > >::unordered_map()
+   [4] findPathWithExhaustiveSearch(ProblemData&, int, std::vector<Position2D, std::allocator<Position2D> >&) [42] std::unordered_map<Position2D, Position2D, Position2DHash, std::equal_to<Position2D>, std::allocator<std::pair<Position2D const, Position2D> > >::size() const [9] std::unordered_map<Position2D, Position2D, Position2DHash, std::equal_to<Position2D>, std::allocator<std::pair<Position2D const, Position2D> > >::~unordered_map()
+  [44] __static_initialization_and_destruction_0(int, int) [47] std::allocator<Position2D>::allocator() [56] std::vector<Position2D, std::allocator<Position2D> >::vector()
+   [6] Position2D::Position2D(int, int) [48] std::allocator<Position2D>::~allocator() [57] std::vector<Position2D, std::allocator<Position2D> >::~vector()
+  [13] Position2D::Position2D() [25] std::allocator<std::__detail::_Hash_node<std::pair<Position2D const, Position2D>, true> >::allocator() [32] std::__detail::_Hash_node_base::_Hash_node_base()
+  [39] ProblemData::flipWaveBuffers() [26] std::allocator<std::__detail::_Hash_node<std::pair<Position2D const, Position2D>, true> >::~allocator() [33] std::__detail::_Hashtable_alloc<std::allocator<std::__detail::_Hash_node<std::pair<Position2D const, Position2D>, true> > >::_M_deallocate_nodes(std::__detail::_Hash_node<std::pair<Position2D const, Position2D>, true>*)
+  [40] ProblemData::flipSearchBuffers() [27] std::_Hashtable<Position2D, std::pair<Position2D const, Position2D>, std::allocator<std::pair<Position2D const, Position2D> >, std::__detail::_Select1st, std::equal_to<Position2D>, Position2DHash, std::__detail::_Mod_range_hashing, std::__detail::_Default_ranged_hash, std::__detail::_Prime_rehash_policy, std::__detail::_Hashtable_traits<true, false, true> >::_M_deallocate_buckets(std::__detail::_Hash_node_base**, unsigned long) [34] std::__detail::_Hashtable_alloc<std::allocator<std::__detail::_Hash_node<std::pair<Position2D const, Position2D>, true> > >::_Hashtable_alloc()
+  [14] ProblemData::ProblemData() [28] std::_Hashtable<Position2D, std::pair<Position2D const, Position2D>, std::allocator<std::pair<Position2D const, Position2D> >, std::__detail::_Select1st, std::equal_to<Position2D>, Position2DHash, std::__detail::_Mod_range_hashing, std::__detail::_Default_ranged_hash, std::__detail::_Prime_rehash_policy, std::__detail::_Hashtable_traits<true, false, true> >::_M_deallocate_buckets() [35] std::__detail::_Hashtable_alloc<std::allocator<std::__detail::_Hash_node<std::pair<Position2D const, Position2D>, true> > >::~_Hashtable_alloc()
+  [10] ProblemData::~ProblemData() [29] std::_Hashtable<Position2D, std::pair<Position2D const, Position2D>, std::allocator<std::pair<Position2D const, Position2D> >, std::__detail::_Select1st, std::equal_to<Position2D>, Position2DHash, std::__detail::_Mod_range_hashing, std::__detail::_Default_ranged_hash, std::__detail::_Prime_rehash_policy, std::__detail::_Hashtable_traits<true, false, true> >::clear() [12] std::__detail::_Prime_rehash_policy::_M_reset(unsigned long)
+  [45] __gnu_cxx::new_allocator<Position2D>::new_allocator() [30] std::_Hashtable<Position2D, std::pair<Position2D const, Position2D>, std::allocator<std::pair<Position2D const, Position2D> >, std::__detail::_Select1st, std::equal_to<Position2D>, Position2DHash, std::__detail::_Mod_range_hashing, std::__detail::_Default_ranged_hash, std::__detail::_Prime_rehash_policy, std::__detail::_Hashtable_traits<true, false, true> >::_Hashtable() [36] std::__detail::_Prime_rehash_policy::_Prime_rehash_policy(float)
+  [46] __gnu_cxx::new_allocator<Position2D>::~new_allocator() [8] std::_Hashtable<Position2D, std::pair<Position2D const, Position2D>, std::allocator<std::pair<Position2D const, Position2D> >, std::__detail::_Select1st, std::equal_to<Position2D>, Position2DHash, std::__detail::_Mod_range_hashing, std::__detail::_Default_ranged_hash, std::__detail::_Prime_rehash_policy, std::__detail::_Hashtable_traits<true, false, true> >::~_Hashtable() [37] std::__detail::_Hashtable_ebo_helper<0, std::allocator<std::__detail::_Hash_node<std::pair<Position2D const, Position2D>, true> >, true>::_Hashtable_ebo_helper()
+  [21] __gnu_cxx::new_allocator<std::__detail::_Hash_node<std::pair<Position2D const, Position2D>, true> >::new_allocator() [49] void std::_Destroy_aux<true>::__destroy<Position2D*>(Position2D*, Position2D*) [38] std::__detail::_Hashtable_ebo_helper<0, std::allocator<std::__detail::_Hash_node<std::pair<Position2D const, Position2D>, true> >, true>::~_Hashtable_ebo_helper()
+  [22] __gnu_cxx::new_allocator<std::__detail::_Hash_node<std::pair<Position2D const, Position2D>, true> >::~new_allocator() [50] std::_Vector_base<Position2D, std::allocator<Position2D> >::_Vector_impl::_Vector_impl() [3] float const& std::clamp<float>(float const&, float const&, float const&)
+  [11] Position2D::operator==(Position2D const&) const [51] std::_Vector_base<Position2D, std::allocator<Position2D> >::_Vector_impl::~_Vector_impl() [58] void std::_Destroy<Position2D*>(Position2D*, Position2D*)
+   [5] Position2D::operator+(Position2D const&) const [52] std::_Vector_base<Position2D, std::allocator<Position2D> >::_M_deallocate(Position2D*, unsigned long) [59] void std::_Destroy<Position2D*, Position2D>(Position2D*, Position2D*, std::allocator<Position2D>&)
+   [7] __gnu_cxx::new_allocator<std::__detail::_Hash_node_base*>::max_size() const [53] std::_Vector_base<Position2D, std::allocator<Position2D> >::_M_get_Tp_allocator()
+  [23] std::_Hashtable<Position2D, std::pair<Position2D const, Position2D>, std::allocator<std::pair<Position2D const, Position2D> >, std::__detail::_Select1st, std::equal_to<Position2D>, Position2DHash, std::__detail::_Mod_range_hashing, std::__detail::_Default_ranged_hash, std::__detail::_Prime_rehash_policy, std::__detail::_Hashtable_traits<true, false, true> >::_M_uses_single_bucket(std::__detail::_Hash_node_base**) const [54] std::_Vector_base<Position2D, std::allocator<Position2D> >::_Vector_base()
