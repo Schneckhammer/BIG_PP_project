@@ -10,23 +10,45 @@
 #include "Utility.h"
 #include "StringSearch.h"
 
+#define NUM_PROC 16
+
 int longestCommonSubsequence(const unsigned char* str1, const unsigned char* str2, size_t len);
 
 // Routine where we match our input sequence across the entire document and return the number of matches.
 // If you're just splitting the work by dividing the queries, then you don't need to touch this function.
-int count_occurrences(const unsigned char *searchString, std::size_t searchStringSize,
-                      const unsigned char *document, std::size_t documentSize,
-                      int rank) {
-    int occurrences = 0;
+void count_occurrences(const unsigned char *document, std::size_t documentSize,
+                        int rank,
+                        int* occurrences_es) {
+    int portion;  // portion for each thread
+
+    if (documentSize % NUM_PROC == 0){
+        portion = (documentSize / NUM_PROC);
+    }
+    else{
+        portion = (documentSize / NUM_PROC) + 1;
+    }
+    std::size_t startIndex = portion * rank;
+    std::size_t endIndex = portion * (rank+1);
+    // if this is the last process, don't go over the end
+    if (rank == NUM_PROC-1){
+        endIndex = documentSize;
+    }
+
     // Search from every possible start string position and determine whether there is a match.
-    for (std::size_t startIndex = 0; startIndex < documentSize - searchStringSize; ++startIndex) {
-        // We consider 2 sequences to match if the longest common subsequence contains >= 70% the number of characters
-        // of the query. In that case, they are close enough so that we count them as the same.
-        if (longestCommonSubsequence(searchString, document + startIndex, searchStringSize) >= 0.7 * searchStringSize) {
-            occurrences++;
+    for (int queryId = 0; queryId < NUM_QUERIES; queryId++) {
+        std::size_t searchStringSize = Utility::getQueryLength(queryId);
+        for (std::size_t start = startIndex; start < endIndex - searchStringSize; ++start) {
+            // We consider 2 sequences to match if the longest common subsequence contains >= 70% the number of characters
+            // of the query. In that case, they are close enough so that we count them as the same.
+            if (longestCommonSubsequence(
+                    Utility::getQuery(queryId),
+                    document + start,
+                    searchStringSize) >= 0.7 * searchStringSize) {
+                occurrences_es[queryId]++;
+            }
         }
     }
-    return occurrences;
+//    return occurrences_es;
 }
 
 int main(int, char **) {
@@ -34,7 +56,6 @@ int main(int, char **) {
     Utility::readEncyclopedia(document);
 
     int size, rank;
-    int result[NUM_QUERIES];
 
     MPI_Init (NULL, NULL);
     MPI_Comm_size (MPI_COMM_WORLD, &size);
@@ -46,11 +67,11 @@ int main(int, char **) {
 
     MPI_Bcast(Utility::getQueryBuffer(), NUM_QUERIES*MAX_QUERY_LENGTH, MPI_CHAR, 0, MPI_COMM_WORLD);
 
-    unsigned char *query = Utility::getQuery(rank);
-    std::size_t queryLength = Utility::getQueryLength(rank);
-    int occurrences = count_occurrences(query, queryLength, document, DOCUMENT_SIZE);
+    int occurrences_es[16] = {0};
+    count_occurrences(document, DOCUMENT_SIZE, rank, occurrences_es);
 
-    MPI_Gather(&occurrences, 1, MPI_INT, result, 1, MPI_INT, 0, MPI_COMM_WORLD);
+    int result[16];
+    MPI_Reduce(occurrences_es, result, 16, MPI_INT, MPI_SUM, 0, MPI_COMM_WORLD);
 
     if (rank==0){
         for (int queryId = 0; queryId < NUM_QUERIES; queryId++) {
