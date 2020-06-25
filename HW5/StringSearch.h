@@ -1,0 +1,14 @@
+//
+// Created by Vincent Bode on 23/06/2020.
+//
+
+#ifndef ASSIGNMENTS_STRINGSEARCH_H
+#define ASSIGNMENTS_STRINGSEARCH_H
+
+#define FILE_NAME "britannica.txt"
+//#define DOCUMENT_SIZE 10093056
+#define DOCUMENT_SIZE 9884291
+#define NUM_QUERIES 16
+#define MAX_QUERY_LENGTH 40
+
+#endif //ASSIGNMENTS_STRINGSEARCH_H
