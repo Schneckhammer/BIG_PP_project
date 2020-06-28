@@ -13,6 +13,7 @@
 #define NUM_PROC 16
 
 int longestCommonSubsequence(const unsigned char* str1, const unsigned char* str2, size_t len);
+int commonSubset(const unsigned char* str1, const unsigned char* str2, size_t len);
 
 // Routine where we match our input sequence across the entire document and return the number of matches.
 // If you're just splitting the work by dividing the queries, then you don't need to touch this function.
@@ -40,15 +41,30 @@ void count_occurrences(const unsigned char *document, std::size_t documentSize,
         for (std::size_t start = startIndex; start < endIndex - searchStringSize; ++start) {
             // We consider 2 sequences to match if the longest common subsequence contains >= 70% the number of characters
             // of the query. In that case, they are close enough so that we count them as the same.
-            if (longestCommonSubsequence(
+            
+            if (commonSubset(
                     Utility::getQuery(queryId),
                     document + start,
-                    searchStringSize) >= 0.7 * searchStringSize) {
-                occurrences_es[queryId]++;
+                    (int)(searchStringSize * 0.6)) > 0.2 * searchStringSize) {
+                if (commonSubset(
+                        Utility::getQuery(queryId),
+                        document + start,
+                        searchStringSize) >= 0.7 * searchStringSize){
+                    // if (longestCommonSubsequence(
+                    //         Utility::getQuery(queryId),
+                    //         document + start,
+                    //         (int)(searchStringSize * 0.6)) > 0.2 * searchStringSize) {
+                        if (longestCommonSubsequence(
+                            Utility::getQuery(queryId),
+                            document + start,
+                            searchStringSize) >= 0.7 * searchStringSize) {
+                            occurrences_es[queryId]++;
+                        }
+                    // }
+                }
             }
-        }
+        }        
     }
-//    return occurrences_es;
 }
 
 int main(int, char **) {
@@ -64,7 +80,7 @@ int main(int, char **) {
     if (rank==0) {
         Utility::generateProblemFromInput(document);
     }
-
+    
     MPI_Bcast(Utility::getQueryBuffer(), NUM_QUERIES*MAX_QUERY_LENGTH, MPI_CHAR, 0, MPI_COMM_WORLD);
 
     int occurrences_es[16] = {0};
@@ -81,7 +97,6 @@ int main(int, char **) {
     }
 
     MPI_Finalize ();
-
     return 0;
 }
 
@@ -91,17 +106,36 @@ int cache[MAX_QUERY_LENGTH + 1][MAX_QUERY_LENGTH + 1];
 // touch this implementation.
 // https://en.wikipedia.org/wiki/Longest_common_subsequence_problem
 int longestCommonSubsequence(const unsigned char* str1, const unsigned char* str2, size_t len) {
+    
+    // counter2++;
     for (unsigned int i = 0; i <= len; ++i) {
         cache[i][0] = 0;
         cache[0][i] = 0;
     }
     for(unsigned int i = 1; i <= len; i++) {
-        for(unsigned int j = 1; j <= len; j++)
-        if(str1[i] == str2[j]) {
-            cache[i][j] = cache[i - 1][j - 1] + 1;
-        } else {
-            cache[i][j] = std::max(cache[i][j - 1], cache[i - 1][j]);
+        for(unsigned int j = 1; j <= len; j++){
+            if(str1[i] == str2[j]) {
+                cache[i][j] = cache[i - 1][j - 1] + 1;
+            } else {
+                cache[i][j] = std::max(cache[i][j - 1], cache[i - 1][j]);
+            }
+            // if (i==j && len>=5 && i>=int(len * 0.5) && cache[i][j] < 1){
+            //     return 0;
+            // }
         }
     }
-    return cache[len][len];
+    return static_cast<int>(cache[len][len]);
+}
+
+int commonSubset(const unsigned char* str1, const unsigned char* str2, size_t len) {
+    int common_chars = 0;
+    for (unsigned int i = 0; i <= len; ++i) {
+        for(unsigned int j = 1; j <= len; j++){
+            if(str1[i] == str2[j]) {
+                common_chars++;
+                break;
+            }
+        }
+    }
+    return common_chars;
 }
