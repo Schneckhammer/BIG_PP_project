@@ -46,26 +46,26 @@ void count_occurrences(const unsigned char *document, std::size_t documentSize,
             //         Utility::getQuery(queryId),
             //         document + start,
             //         (int)(searchStringSize * 0.6)) > 0.2 * searchStringSize) {
-            //     if (commonSubset(
-            //             Utility::getQuery(queryId),
-            //             document + start,
-            //             searchStringSize) >= 0.7 * searchStringSize){
-            //         // if (longestCommonSubsequence(
-            //         //         Utility::getQuery(queryId),
-            //         //         document + start,
-            //         //         (int)(searchStringSize * 0.6)) > 0.2 * searchStringSize) {
-                        int comm = longestCommonSubsequence(
+                int comm = commonSubset(
+                        Utility::getQuery(queryId),
+                        document + start,
+                        searchStringSize);
+                if ( comm>= 0.7 * searchStringSize){
+                    // if (longestCommonSubsequence(
+                    //         Utility::getQuery(queryId),
+                    //         document + start,
+                    //         (int)(searchStringSize * 0.6)) > 0.2 * searchStringSize) {
+                        if (longestCommonSubsequence(
                             Utility::getQuery(queryId),
                             document + start,
-                            searchStringSize);
-                        if (comm >= 0.7 * searchStringSize) {
+                            searchStringSize) >= 0.7 * searchStringSize) {
                             occurrences_es[queryId]++;
                         }
-                        else {
-                            start = start + std::max(0, (int(0.7 * searchStringSize) - comm));
-                        }
                     // }
-            //     }
+                } 
+                else {
+                    start = start + std::max(0, (int(0.7 * searchStringSize) - comm));
+                }
             // }
         }        
     }
