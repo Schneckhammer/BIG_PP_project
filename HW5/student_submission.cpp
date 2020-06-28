@@ -110,8 +110,7 @@ int cache[MAX_QUERY_LENGTH + 1][MAX_QUERY_LENGTH + 1];
 // touch this implementation.
 // https://en.wikipedia.org/wiki/Longest_common_subsequence_problem
 int longestCommonSubsequence(const unsigned char* str1, const unsigned char* str2, size_t len) {
-    
-    // counter2++;
+
     for (unsigned int i = 0; i <= len; ++i) {
         cache[i][0] = 0;
         cache[0][i] = 0;
@@ -133,7 +132,7 @@ int longestCommonSubsequence(const unsigned char* str1, const unsigned char* str
 
 int commonSubset(const unsigned char* str1, const unsigned char* str2, size_t len) {
     int common_chars = 0;
-    for (unsigned int i = 0; i <= len; ++i) {
+    for (unsigned int i = 1; i <= len; ++i) {
         for(unsigned int j = 1; j <= len; j++){
             if(str1[i] == str2[j]) {
                 common_chars++;
