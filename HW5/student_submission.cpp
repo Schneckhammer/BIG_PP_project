@@ -42,27 +42,31 @@ void count_occurrences(const unsigned char *document, std::size_t documentSize,
             // We consider 2 sequences to match if the longest common subsequence contains >= 70% the number of characters
             // of the query. In that case, they are close enough so that we count them as the same.
             
-            if (commonSubset(
-                    Utility::getQuery(queryId),
-                    document + start,
-                    (int)(searchStringSize * 0.6)) > 0.2 * searchStringSize) {
-                if (commonSubset(
-                        Utility::getQuery(queryId),
-                        document + start,
-                        searchStringSize) >= 0.7 * searchStringSize){
-                    // if (longestCommonSubsequence(
-                    //         Utility::getQuery(queryId),
-                    //         document + start,
-                    //         (int)(searchStringSize * 0.6)) > 0.2 * searchStringSize) {
-                        if (longestCommonSubsequence(
+            // if (commonSubset(
+            //         Utility::getQuery(queryId),
+            //         document + start,
+            //         (int)(searchStringSize * 0.6)) > 0.2 * searchStringSize) {
+            //     if (commonSubset(
+            //             Utility::getQuery(queryId),
+            //             document + start,
+            //             searchStringSize) >= 0.7 * searchStringSize){
+            //         // if (longestCommonSubsequence(
+            //         //         Utility::getQuery(queryId),
+            //         //         document + start,
+            //         //         (int)(searchStringSize * 0.6)) > 0.2 * searchStringSize) {
+                        int comm = longestCommonSubsequence(
                             Utility::getQuery(queryId),
                             document + start,
-                            searchStringSize) >= 0.7 * searchStringSize) {
+                            searchStringSize);
+                        if (comm >= 0.7 * searchStringSize) {
                             occurrences_es[queryId]++;
                         }
+                        else {
+                            start = start + std::max(0, (int(0.7 * searchStringSize) - comm));
+                        }
                     // }
-                }
-            }
+            //     }
+            // }
         }        
     }
 }
@@ -124,7 +128,7 @@ int longestCommonSubsequence(const unsigned char* str1, const unsigned char* str
             // }
         }
     }
-    return static_cast<int>(cache[len][len]);
+    return cache[len][len];
 }
 
 int commonSubset(const unsigned char* str1, const unsigned char* str2, size_t len) {
