@@ -2,7 +2,8 @@
 #include <cstddef>
 #include <cstdio>
 #include <algorithm>
-// #include <iostream>
+#include <iostream>
+#include <chrono>
 #include "Utility.h"
 #include "StringSearch.h"
 
@@ -14,6 +15,8 @@ int commonSubset(const unsigned char* str1, const unsigned char* str2, size_t le
 
 void count_occurrences(const unsigned char *document, std::size_t documentSize,
                         int rank, int* occurrences_es) {
+
+    // static parallelization of the loop
     int portion;  // portion for each thread
 
     if (documentSize % NUM_PROC == 0){
@@ -35,43 +38,45 @@ void count_occurrences(const unsigned char *document, std::size_t documentSize,
         for (std::size_t start = startIndex; start < endIndex - searchStringSize; ++start) {     
             // first check how much common chars the 2 strings have. 
             // Finding the size of the subset is a lot faster than the size of subsequence.
-            int comm_subset = commonSubset(
-                    query,
-                    document + start,
-                    searchStringSize);
-            if ( comm_subset >= 0.7 * searchStringSize){
-                // if string have enough common chars, try the longest subsequence
+             int comm_subset = commonSubset(
+                     query,
+                     document + start,
+                     searchStringSize);
+             if ( comm_subset >= 0.7 * searchStringSize){
+                 // if strings have enough common chars, try the longest subsequence
                 if (longestCommonSubsequence(
                     query,
                     document + start,
                     searchStringSize) >= 0.7 * searchStringSize) {
                     occurrences_es[queryId]++;
                 }
-            } 
-            else {
-                // if strings have little in common, we can skip several iterations
-                int jump = std::max(0, (int(0.7 * searchStringSize) - comm_subset));
-                start = start + jump;
-            }
+             }
+             else {
+                 // if strings have little in common, we can skip several iterations
+                 int jump = std::max(0, (int(0.7 * searchStringSize) - comm_subset));
+                 start = start + jump;
+             }
         }        
     }
 }
 
 int main(int, char **) {
+
     unsigned char* document;
     Utility::readEncyclopedia(document);
-
+    
     int size, rank;
 
     MPI_Init (NULL, NULL);
     MPI_Comm_size (MPI_COMM_WORLD, &size);
     MPI_Comm_rank (MPI_COMM_WORLD, &rank);
 
+
     if (rank==0) {
         Utility::generateProblemFromInput(document);
     }
-    
     MPI_Bcast(Utility::getQueryBuffer(), NUM_QUERIES*MAX_QUERY_LENGTH, MPI_CHAR, 0, MPI_COMM_WORLD);
+
 
     int occurrences_es[16] = {0};
     count_occurrences(document, DOCUMENT_SIZE, rank, occurrences_es);
@@ -114,7 +119,7 @@ int longestCommonSubsequence(const unsigned char* str1, const unsigned char* str
 }
 
 
-// this function is at least 20 times faster than longestCommonSubsequence
+// this function is at least 20 times faster than the longestCommonSubsequence
 int commonSubset(const unsigned char* str1, const unsigned char* str2, size_t len) {
     int common_chars = 0;
     for (unsigned int i = 1; i <= len; i++) {
