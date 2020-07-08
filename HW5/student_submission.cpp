@@ -89,6 +89,7 @@ int main(int, char **) {
             printf("Query %i: %i occurrences (query length %zu).\n",
                     queryId, result[queryId], Utility::getQueryLength(queryId));
         }
+        std::cout << "DONE" << std::endl;
     }
 
     MPI_Finalize();

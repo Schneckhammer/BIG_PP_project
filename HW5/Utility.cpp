@@ -14,6 +14,7 @@ unsigned char queryStorage[NUM_QUERIES][MAX_QUERY_LENGTH];
 // Generates the problem as usual by getting a seed.
 void Utility::generateProblemFromInput(unsigned char* document) {
     unsigned int seed = 0;
+    std::cout << "Exercise 9 version 2 (update your code if you're missing this message)" << std::endl;
     std::cout << "READY" << std::endl;
     std::cin >> seed;
 
@@ -23,8 +24,9 @@ void Utility::generateProblemFromInput(unsigned char* document) {
     }
 
     std::mt19937 random(seed);
+    std::uniform_int_distribution distribution(0, DOCUMENT_SIZE - MAX_QUERY_LENGTH);
     for (unsigned int queryId = 0; queryId < NUM_QUERIES; queryId++) {
-        unsigned int queryStart = random() / (std::mt19937::max() / (DOCUMENT_SIZE - MAX_QUERY_LENGTH));
+        unsigned int queryStart = distribution(random);
         std::memcpy(queryStorage[queryId], document + queryStart, getQueryLength(queryId));
     }
 }
